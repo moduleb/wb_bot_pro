@@ -7,7 +7,9 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message
 
 from app.bot import bot
-from app.handlers import router
+from app.handlers.commands import router as main_router
+from app.handlers.start_task import router as start_task_router
+from app.handlers.stop_task import router as stop_task_router
 
 dp = Dispatcher(storage=MemoryStorage())
 
@@ -20,15 +22,12 @@ async def get_start(message: Message, bot: Bot):
 
 
 async def main():
-    # url = 'https://www.wildberries.ru/catalog/180400996/detail.aspx'
-    # delay = 2
-    # await check_price(url, delay)
 
-    # Создаем бота
-
-    dp.include_router(router)
+    dp.include_router(main_router)
+    dp.include_router(start_task_router)
+    dp.include_router(stop_task_router)
     # dp.message.register(get_start)
-    dp.message.middleware(ChatActionMiddleware())
+    # dp.message.middleware(ChatActionMiddleware())
     await bot.delete_webhook(drop_pending_updates=True)
 
     try:

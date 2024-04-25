@@ -3,21 +3,24 @@ from urllib.parse import urlparse
 
 import requests
 
+from app import text
+from app.send_msg import send_msg
+
 
 class Item:
     def __init__(self, url, user_id):
         self._base_api_url = 'https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=-1257786&spp=30&nm={item_id}'
-        self._id: int = self._get_id(url)
+        self._item_id: int = self._get_item_id(url)
         self._api_url: str = self._get_api_url()
         data = self._get_data()
         self._price: int = self._get_price(data)
         self.title: str = self._get_title(data)
-        self.user_id: int= user_id
+        self.user_id: int = user_id
 
     def __str__(self):
         return f'{self.title}, {self.price} руб.'
 
-    def _get_id(self, original_url) -> int:
+    def _get_item_id(self, original_url) -> int:
         # Парсим url и проверяем, что он валидный
         result = urlparse(original_url)
         if not result.scheme and result.netloc:
@@ -31,8 +34,8 @@ class Item:
             raise ValueError
 
         # Проверяем валидность id
-        id = int(item_id)
-        return id
+        item_id = int(item_id)
+        return item_id
 
     def _get_data(self) -> dict:
         result = requests.get(url=self._api_url).json()
@@ -56,17 +59,16 @@ class Item:
         return title if title else ValueError("Название недоступно")
 
     def _get_api_url(self):
-        api_url = self._base_api_url.format(item_id=self._id)
+        api_url = self._base_api_url.format(item_id=self._item_id)
         return api_url
-
-    def check_price(self) -> Optional[int]:
-        new_price = self._get_price()
-        if self.price != new_price:
-            return new_price
 
     @property
     def price(self):
         return self._price
+
+    @property
+    def id(self):
+        return str(self.user_id) + "-" + str(self._item_id)
 
     @price.setter
     def price(self, price):
@@ -77,3 +79,14 @@ class Item:
                 raise ValueError
         except ValueError:
             raise ValueError("Price should be an integer > 0")
+
+    async def check_price(self):
+        new_price = self._get_price()
+        if self.price != new_price:
+            msg = text.price_changed.format(
+                title=self.title,
+                old_price=self.price,
+                new_price=new_price
+            )
+            await send_msg(self.user_id, msg)
+            self.price = new_price

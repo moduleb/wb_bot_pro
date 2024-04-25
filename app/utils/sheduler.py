@@ -1,25 +1,25 @@
 import asyncio
 
-from app.utils.parser import Parser
 
 class Scheduler:
     @staticmethod
-    async def _loop(item):
+    async def _loop(func, *args):
         while True:
-            await Parser.check_price(item)
+            await func(*args)
             await asyncio.sleep(2)
     
     @staticmethod
-    async def start_task(item):
-        await asyncio.create_task(Scheduler._loop(item), name=item._id)
+    async def start_task(func, item, taskname):
+        await asyncio.create_task(Scheduler._loop(func, item), name=taskname)
     
     @staticmethod
-    async def get_all_tasks():
-        return [task.get_name() for task in asyncio.all_tasks()]
+    def get_all_tasks():
+        return [task.get_name() for task in asyncio.all_tasks() if not task.get_name().startswith("Task")]
     
     @staticmethod
-    async def stop_task(task_name):
+    async def stop_task(taskname):
         for task in asyncio.all_tasks():
-            if task.get_name() == str(task_name):
+            if task.get_name() == taskname:
                 task.cancel()
+                print(f"Задача: {task.get_name()}, остановлена.")
                 return
