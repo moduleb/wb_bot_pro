@@ -1,41 +1,46 @@
+"""
+    bot.delete_webhook(drop_pending_updates=True)
+Dы указываете боту удалить текущий вебхук.
+Параметр drop_pending_updates=True указывает боту также удалить все ожидающие обновления,
+которые могли быть накоплены во время использования вебхука.
+
+    dp.start_polling(bot) запускает бота с использованием метода Long Polling.
++ allowed_updates=dp.resolve_used_update_types() указывает, какие типы обновлений бот будет получать.
+бот будет ограничивать типы обновлений, которые он получает, только теми, которые он может обработать,
+что может быть полезно для оптимизации работы бота и уменьшения нагрузки на сервер.
+"""
+
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
-from aiogram.utils.chat_action import ChatActionMiddleware
+from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.types import Message
 
-from app.bot import bot
-from app.handlers.commands import router as main_router
-from app.handlers.start_task import router as start_task_router
-from app.handlers.stop_task import router as stop_task_router
+from app import config
+from app.bot_.bot import bot
+from app.bot_.handlers import router
+from app.db import cursor, conn
+from app.scheduler import loop_check_price
 
 dp = Dispatcher(storage=MemoryStorage())
 
 
-async def get_start(message: Message, bot: Bot):
-    await bot.send_message(message.from_user.id, "hello")
-    await message.reply("hello")
-    await message.answer("hello")
-
-
-
 async def main():
-
-    dp.include_router(main_router)
-    dp.include_router(start_task_router)
-    dp.include_router(stop_task_router)
-    # dp.message.register(get_start)
-    # dp.message.middleware(ChatActionMiddleware())
+    dp.include_router(router)
     await bot.delete_webhook(drop_pending_updates=True)
 
     try:
-        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        await asyncio.gather(
+            dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types()),
+            loop_check_price(timer=config.timeout)
+        )
+
     finally:
+        cursor.close()
+        conn.close()
         await bot.session.close()
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
