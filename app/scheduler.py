@@ -2,7 +2,6 @@ import asyncio
 import logging
 
 from app import db, parser, text
-from app.bot_.bot import bot
 
 
 async def notify_price_changes(bot):
@@ -26,14 +25,12 @@ async def notify_price_changes(bot):
             db.update_price(id_=item.id, price=item.price)
 
 
-async def loop_check_price(timer):
-    while True:
+async def loop_check_price(timeout, bot):
+    try:
+        while True:
+            await notify_price_changes(bot)
+            logging.debug('Check price...')
+            await asyncio.sleep(timeout)
 
-        logging.debug('check price...')
-
-        try:
-            await notify_price_changes(bot=bot)
-        except Exception as e:
-            logging.error(str(e))
-
-        await asyncio.sleep(timer)
+    except Exception as e:
+        logging.error(str(e))

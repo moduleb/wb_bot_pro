@@ -1,4 +1,7 @@
-from aiogram import Router, F
+from typing import Union
+
+from aiogram import Router, F, Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -11,16 +14,76 @@ from app.parser import ParserError
 router = Router()
 
 
+async def delete_msgs(bot: Bot, msgs: list[Message]) -> None:
+    if not msgs:
+        return
+    try:
+        for msg in msgs:
+            await bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+    except TelegramBadRequest:  # если сообщения с таким id не существует...
+        pass
+
+
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
-    await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
+    # Удаляем предыдущие сообщения
+    data = await state.get_data()
+    await delete_msgs(msg.bot, data.get('msgs'))
+
+    sent_msgs = []
+    sent_msg = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
+    sent_msgs.append(sent_msg)
+
+    # Записываем сообщения для последующего удаления
+    data['msgs'] = sent_msgs
+    await state.set_data(data)
+
     await state.set_state(State_.wait_for_url)
+
+
+@router.message(Command("tasks"))
+@router.callback_query(F.data == "items_list")
+async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
+    # Удаляем предыдущие сообщения
+    data = await state.get_data()
+    await delete_msgs(event.bot, data.get('msgs'))
+
+    user_id = event.from_user.id
+    bot = event.bot
+    sent_msgs = []
+
+    if items := db.get_items_by_user_id(user_id):
+        for item in items:
+            sent_msg = await bot.send_message(
+                chat_id=user_id,
+                text=text.item_info.format(title=item.title, price=item.price),
+                reply_markup=kb.stop(item.item_id))
+            sent_msgs.append(sent_msg)
+
+    else:
+        sent_msg = await bot.send_message(
+            chat_id=user_id,
+            text=text.no_items)
+        sent_msgs.append(sent_msg)
+
+        await state.set_state(State_.wait_for_url)
+
+    # Записываем сообщения для последующего удаления
+    data['msgs'] = sent_msgs
+    await state.set_data(data)
 
 
 @router.message(State_.wait_for_url)
 async def add(msg: Message, state: FSMContext):
+    
+    # Удаляем предыдущие сообщения
+    data = await state.get_data()
+    await delete_msgs(msg.bot, data.get('msgs'))
+
     url = msg.text
     user_id = msg.from_user.id
+    sent_msgs = []
+
     try:
         item_id = parser.get_item_id(url)
         data = parser.get_data(item_id)
@@ -28,9 +91,9 @@ async def add(msg: Message, state: FSMContext):
         title = parser.get_title(data)
 
         # Проверяем на дубликаты
-        if db.get_items_by_user_id_and_item_id(user_id=user_id,
-                                               item_id=item_id):
-            await msg.answer(text.item_duplicate, reply_markup=kb.menu)
+        if db.get_items_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
+            sent_msg = await msg.answer(text=text.item_duplicate, reply_markup=kb.menu)
+            sent_msgs.append(sent_msg)
             return
 
         # Сохраняем в бд
@@ -40,30 +103,20 @@ async def add(msg: Message, state: FSMContext):
                   title=title)
 
         # Уведомляем об успехе
-        mesg = await msg.answer(text.item_added, reply_markup=kb.menu)
+        sent_msg = await msg.answer(text=text.item_added, reply_markup=kb.menu)
+        sent_msgs.append(sent_msg)
 
     except ParserError as e:
-        await msg.reply(str(e))
+        sent_msg = await msg.reply(str(e))
+        sent_msgs.append(sent_msg)
 
-
-@router.callback_query(F.data == "items_list")
-async def items_list(clbck: CallbackQuery, state: FSMContext):
-    user_id = clbck.from_user.id
-    if items := db.get_items_by_user_id(user_id):
-        for item in items:
-            await clbck.message.answer(
-                text.item_info.format(title=item.title, price=item.price),
-                reply_markup=kb.stop(item.item_id))
-
-    else:
-        await clbck.message.answer(text.no_items)
-        await state.set_state(State_.wait_for_url)
-
-    await clbck.message.delete()
+    # Записываем сообщения для последующего удаления
+    data['msgs'] = sent_msgs
+    await state.set_data(data)
 
 
 @router.callback_query(lambda F: F.data.startswith("del"))
-async def delete(clbck: CallbackQuery, state: FSMContext):
-    db.delete(user_id=clbck.from_user.id,
-              item_id=clbck.data.split('_')[1])
-    await clbck.message.delete()
+async def delete(callback: CallbackQuery):
+    db.delete(user_id=callback.from_user.id,
+              item_id=callback.data.split('_')[1])
+    await callback.message.delete()

@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from aiogram import Bot
 
 from app import db, config
 from app.parser import get_item_id, get_data, get_price, get_title
@@ -17,8 +18,8 @@ urls = ('sdg',
 
 @pytest.mark.parametrize("url", urls)
 def test_get_item_id(url):
-    from app.parser import UrlError, get_item_id
-    with pytest.raises(UrlError):
+    from app.parser import ParserError, get_item_id
+    with pytest.raises(ParserError):
         get_item_id(url)
 
 
@@ -74,7 +75,7 @@ async def test_notify_price_changes():
 
     # Проверяем, что бот отправил сообщение об изменении цены
     # Изменяем цену на несуществующую, чтобы функция сработала
-    from app.bot_.bot import bot
+    bot = Bot(token=config.TOKEN)
     db.update_price(id_=created_id, price=price)
     await notify_price_changes(bot)
 
