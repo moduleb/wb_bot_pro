@@ -15,13 +15,12 @@ router = Router()
 
 
 async def delete_msgs(bot: Bot, msgs: list[Message]) -> None:
-    if not msgs:
-        return
-    try:
+    if msgs:
         for msg in msgs:
-            await bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
-    except TelegramBadRequest:  # если сообщения с таким id не существует...
-        pass
+            try:
+                await bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+            except TelegramBadRequest:  # если сообщения с таким id не существует...
+                pass
 
 
 @router.message(Command("start"))
@@ -56,8 +55,10 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
         for item in items:
             sent_msg = await bot.send_message(
                 chat_id=user_id,
-                text=text.item_info.format(title=item.title, price=item.price),
-                reply_markup=kb.stop(item.item_id))
+                text=text.item_info.format(title=item.title, price=item.price, url=item.url),
+                reply_markup=kb.stop(item.item_id),
+                parse_mode="Markdown",
+                disable_web_page_preview=True)
             sent_msgs.append(sent_msg)
 
     else:
@@ -100,14 +101,16 @@ async def add(msg: Message, state: FSMContext):
         db.insert(user_id=user_id,
                   item_id=item_id,
                   price=price,
-                  title=title)
+                  title=title,
+                  url=url)
 
         # Уведомляем об успехе
         sent_msg = await msg.answer(text=text.item_added, reply_markup=kb.menu)
         sent_msgs.append(sent_msg)
 
     except ParserError as e:
-        sent_msg = await msg.reply(str(e))
+        sent_msg = await msg.reply(str(e),
+                                   disable_web_page_preview=True)
         sent_msgs.append(sent_msg)
 
     # Записываем сообщения для последующего удаления

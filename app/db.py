@@ -11,9 +11,10 @@ class Item:
     item_id: int
     price: int
     title: str
+    url: str
 
     def to_tuple(self):
-        return (self.user_id, self.item_id, self.price, self.title)
+        return (self.user_id, self.item_id, self.price, self.title, self.url)
 
 
 conn = sqlite3.connect(config.sql_connect_string)
@@ -24,15 +25,16 @@ query = "create table %s (\
     user_id integer,\
     item_id integer,\
     price integer,\
-    title varchar(100)\
+    title varchar(100),\
+    url varchar(100)\
     )" % table_name
 
 cursor.execute(query)
 
 
-def insert(user_id, item_id, price, title):
-    ins = "insert into %s (user_id, item_id, price, title) values (?, ?, ?, ?)" % table_name
-    cursor.execute(ins, (user_id, item_id, price, title))
+def insert(user_id, item_id, price, title, url):
+    ins = "insert into %s (user_id, item_id, price, title, url) values (?, ?, ?, ?, ?)" % table_name
+    cursor.execute(ins, (user_id, item_id, price, title, url))
     created_id = cursor.lastrowid
     return created_id
 

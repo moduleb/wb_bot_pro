@@ -11,8 +11,6 @@ Dы указываете боту удалить текущий вебхук.
 """
 import asyncio
 import logging
-import sched
-import time
 
 from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -21,8 +19,6 @@ from app import config
 from app.bot_.handlers import router
 from app.db import cursor, conn
 from app.scheduler import loop_check_price
-
-stop_event = asyncio.Event()
 
 commands = [
     types.BotCommand(command="/start", description="Начать диалог"),
@@ -47,10 +43,6 @@ async def main():
         conn.close()
 
 
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
-
-
-
