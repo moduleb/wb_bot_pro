@@ -20,7 +20,7 @@ class Item:
 conn = sqlite3.connect(config.sql_connect_string)
 cursor = conn.cursor()
 table_name = 'test'
-query = "create table %s (\
+query = "create table IF NOT EXISTS %s (\
     id integer primary key autoincrement,\
     user_id integer,\
     item_id integer,\
@@ -30,7 +30,7 @@ query = "create table %s (\
     )" % table_name
 
 cursor.execute(query)
-
+conn.commit()
 
 def insert(user_id, item_id, price, title, url):
     ins = "insert into %s (user_id, item_id, price, title, url) values (?, ?, ?, ?, ?)" % table_name
