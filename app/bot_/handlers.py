@@ -118,7 +118,7 @@ async def add(msg: Message, state: FSMContext):
     await state.set_data(data)
 
 
-@router.callback_query(lambda F: F.data.startswith("del"))
+@router.callback_query(F.data.startswith("del"))
 async def delete(callback: CallbackQuery):
     db.delete(user_id=callback.from_user.id,
               item_id=callback.data.split('_')[1])

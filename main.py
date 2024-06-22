@@ -28,17 +28,17 @@ commands = [
 dp = Dispatcher(storage=MemoryStorage())
 bot = Bot(token=config.TOKEN)
 
+
 async def main():
     dp.include_router(router)
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
+    task = asyncio.create_task(loop_check_price(config.timeout, bot))
     try:
-        await asyncio.gather(
-            dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types()),
-            loop_check_price(timeout=config.timeout, bot=bot)
-        )
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),
+                               close_bot_session=True)
     finally:
-        await bot.session.close()
+        task.cancel()
         cursor.close()
         conn.close()
 
@@ -46,3 +46,6 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
+
+
+

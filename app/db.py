@@ -36,12 +36,14 @@ def insert(user_id, item_id, price, title, url):
     ins = "insert into %s (user_id, item_id, price, title, url) values (?, ?, ?, ?, ?)" % table_name
     cursor.execute(ins, (user_id, item_id, price, title, url))
     created_id = cursor.lastrowid
+    conn.commit()
     return created_id
 
 
 def update_price(id_, price):
     ins = f"update {table_name} set price = ? where id = ?"
     cursor.execute(ins, (price, id_))
+    conn.commit()
     return cursor.rowcount
 
 
@@ -76,10 +78,12 @@ def __convert_db_data_to_objs(rows):
 def delete(user_id, item_id):
     query = f'DELETE FROM {table_name} WHERE user_id = ? AND item_id = ?'
     cursor.execute(query, (user_id, item_id))
+    conn.commit()
     return cursor.rowcount
 
 
 def delete_by_id(id_):
     query = f'DELETE FROM {table_name} WHERE id = ?'
     cursor.execute(query, (id_,))
+    conn.commit()
     return cursor.rowcount

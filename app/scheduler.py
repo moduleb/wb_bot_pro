@@ -26,6 +26,7 @@ async def notify_price_changes(bot):
 
 
 async def loop_check_price(timeout, bot):
+# async def loop_check_price():
     try:
         while True:
             await notify_price_changes(bot)
