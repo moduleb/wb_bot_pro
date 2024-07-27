@@ -2,6 +2,9 @@
 ![Aiogram](https://img.shields.io/badge/Aiogram-white?style=for-the-badge&color=%234796EC)
 ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
 
+--- проект в разработке ---
+------
+
 ## Бот для Телеграм, отслеживающий изменение цены на Wildberries.
 
 Что умеет бот:
