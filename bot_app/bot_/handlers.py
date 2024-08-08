@@ -6,10 +6,10 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from app import text, db, parser
-from app.bot_ import kb
-from app.bot_.states import State_
-from app.parser import ParserError
+from bot_app import text, db, parser
+from bot_app.bot_ import kb
+from bot_app.bot_.states import State_
+from bot_app.parser import ParserError
 
 router = Router()
 

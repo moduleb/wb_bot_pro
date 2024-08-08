@@ -1,7 +1,7 @@
 import sqlite3
 from dataclasses import dataclass
 
-from app import config
+from bot_app import config
 
 
 @dataclass
@@ -17,7 +17,8 @@ class Item:
         return (self.user_id, self.item_id, self.price, self.title, self.url)
 
 
-conn = sqlite3.connect(config.sql_connect_string)
+# conn = sqlite3.connect(config.sql_connect_string)
+conn = sqlite3.connect(":memory:")
 cursor = conn.cursor()
 table_name = 'test'
 query = "create table IF NOT EXISTS %s (\

@@ -15,10 +15,9 @@ import logging
 from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from app import config
-from app.bot_.handlers import router
-from app.db import cursor, conn
-from app.scheduler import loop_check_price
+from bot_app import config
+from bot_app.bot_.handlers import router
+from bot_app.db import cursor, conn
 
 commands = [
     types.BotCommand(command="/start", description="Начать диалог"),
@@ -33,12 +32,10 @@ async def main():
     dp.include_router(router)
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
-    task = asyncio.create_task(loop_check_price(config.timeout, bot))
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),
                                close_bot_session=True)
     finally:
-        task.cancel()
         cursor.close()
         conn.close()
 

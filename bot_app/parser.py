@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 
 import requests
 
-from app import config
+from bot_app import config
 
 
 class ParserError(Exception):
