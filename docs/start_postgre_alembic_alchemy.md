@@ -4,20 +4,25 @@ docker run --name postgres-container -e POSTGRES_USER=user -e POSTGRES_PASSWORD=
 pip install asyncpg alembic sqlalchemy
 pip3 install psycopg2-binary
 
+# Инициализируем Alembic
 alembic init migrations
 
+# Изменения в файлах
 [alembic.ini]
 sqlalchemy.url = postgresql://username:password@localhost/dbname
 
 [migrations/.env]
 from models import Base
 target_metadata = Base.metadata
+---------------------
 
 # Создаем миграцию
 alembic revision --autogenerate -m "Initial migration"
 
 # Применяем миграцию
 alembic upgrade head
+
+---
 
 # Проверка баз в докере
 docker exec -it 3ba7fe48f421 bash
@@ -62,6 +67,11 @@ psql -U user -d db53
    ```sql
    SELECT * FROM имя_таблицы;
    ```
+   
+# Создать другую базу данных 
+CREATE DATABASE new_database;
+\l проверка
+\с new_database  подключиться
    
 # Вывести количество записей в таблице
 SELECT COUNT(*) FROM mytable_;

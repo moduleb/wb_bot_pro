@@ -1,35 +1,16 @@
-from sqlalchemy import text, create_engine
+# db/database.py
+# import aioredis
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from models import All_
+from .models import Base
+import config
 
-# Создание движка
-engine = create_engine('postgresql://user:passw53@localhost/db53')
-Session = sessionmaker(bind=engine)
-session = Session()
+# redis = aioredis.from_url("redis://localhost")
 
-# Проверка соединения
-try:
-    # Попробуем выполнить простой запрос, чтобы проверить соединение
-    session.execute(text("SELECT 1"))
-    print("Соединение с базой данных установлено.")
-except Exception as e:
-    print(f"Ошибка соединения с базой данных: {e}")
-    session.close()
-    exit(1)  # Завершить программу, если соединение не удалось
+# Создание асинхронного движка
+engine = create_async_engine(config.DATABASE_URL, echo=True)
+AsyncSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
-# Пример добавления пользователя
-new_item = All_(
-    user_name="user_name",
-    user_host=12,
-    item_id=12,
-    price=12,
-    title="title",
-    url="url"
-)
-try:
-    session.commit()
-except Exception as e:
-    session.rollback()  # Откатить изменения в случае ошибки
-    print(f"Error occurred: {e}")
-finally:
-    session.close()  # Закрыть сессию после завершения
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)

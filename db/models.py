@@ -1,9 +1,12 @@
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.ext.declarative import declarative_base
+# db/models.py
 
-from alchemy import engine
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import DeclarativeBase
 
-Base = declarative_base()
+
+# Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class All_(Base):
@@ -18,5 +21,8 @@ class All_(Base):
     url = Column(String)
 
 
+class TestTable(Base):
+    __tablename__ = 'test_table'
 
-Base.metadata.create_all(engine)
+    id = Column(Integer, primary_key=True)
+    user_name = Column(String)

@@ -1,5 +1,12 @@
-redis
+pytest
+pytest-asyncio
+
+aioredis
+    redis
 celery
 flowers
 aiogran
 python-dotenv
+alembic
+sqlalchemy
+asyncpg
