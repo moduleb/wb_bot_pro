@@ -6,7 +6,8 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from bot_app import text, db, parser
+from bot_app import text, parser
+from db import service
 from bot_app.bot_ import kb
 from bot_app.bot_.states import State_
 from bot_app.parser import ParserError
@@ -51,7 +52,7 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
     bot = event.bot
     sent_msgs = []
 
-    if items := db.get_items_by_user_id(user_id):
+    if items := await service.get_items_by_user_id(user_id):
         for item in items:
             sent_msg = await bot.send_message(
                 chat_id=user_id,
@@ -76,7 +77,6 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
 
 @router.message(State_.wait_for_url)
 async def add(msg: Message, state: FSMContext):
-    
     # Удаляем предыдущие сообщения
     data = await state.get_data()
     await delete_msgs(msg.bot, data.get('msgs'))
@@ -92,17 +92,17 @@ async def add(msg: Message, state: FSMContext):
         title = parser.get_title(data)
 
         # Проверяем на дубликаты
-        if db.get_items_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
+        if obj := await service.get_item_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
             sent_msg = await msg.answer(text=text.item_duplicate, reply_markup=kb.menu)
             sent_msgs.append(sent_msg)
             return
 
         # Сохраняем в бд
-        db.insert(user_id=user_id,
-                  item_id=item_id,
-                  price=price,
-                  title=title,
-                  url=url)
+        await service.insert(user_id=user_id,
+                             item_id=item_id,
+                             price=price,
+                             title=title,
+                             url=url)
 
         # Уведомляем об успехе
         sent_msg = await msg.answer(text=text.item_added, reply_markup=kb.menu)
@@ -120,6 +120,6 @@ async def add(msg: Message, state: FSMContext):
 
 @router.callback_query(F.data.startswith("del"))
 async def delete(callback: CallbackQuery):
-    db.delete(user_id=callback.from_user.id,
-              item_id=callback.data.split('_')[1])
+    await service.delete(user_id=callback.from_user.id,
+                         item_id=callback.data.split('_')[1])
     await callback.message.delete()

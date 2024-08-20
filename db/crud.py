@@ -30,7 +30,10 @@ M = TypeVar('M', bound=Base)
 
 @async_session_scope
 async def get_many_by_filters(
-        session: AsyncSession, model: M, **filters: Dict[str, str|int]) -> list[M]:
+        session: AsyncSession,
+        model: M,
+        **filters: Dict[str, str | int]) -> list[M]:
+
     # Начинаем строить запрос
     query = select(model)
 

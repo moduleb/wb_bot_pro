@@ -1,6 +1,6 @@
 # db/models.py
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, BigInteger
 from sqlalchemy.orm import DeclarativeBase
 
 
@@ -13,9 +13,8 @@ class All_(Base):
     __tablename__ = 'all_'
 
     id = Column(Integer, primary_key=True)
-    user_name = Column(String)
-    user_host = Column(String)
-    item_id = Column(Integer)
+    user_id = Column(BigInteger)
+    item_id = Column(BigInteger)
     price = Column(Integer)
     title = Column(String)
     url = Column(String)

@@ -29,7 +29,8 @@ docker exec -it 3ba7fe48f421 bash
 ls - список команд
 psql -U user -d db53
 
-или сразу docker exec -it 3ba7fe48f421 psql -U user -d mydb
+или сразу 
+docker exec -it 3ba7fe48f421 psql -U user -d db53
 
 ### Основные команды PostgreSQL
 
