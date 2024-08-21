@@ -15,9 +15,8 @@ import logging
 from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from bot_app import config
-from bot_app.bot_.handlers import router
-from bot_app.db import cursor, conn
+import config
+from handlers import router
 
 commands = [
     types.BotCommand(command="/start", description="Начать диалог"),
@@ -36,8 +35,7 @@ async def main():
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),
                                close_bot_session=True)
     finally:
-        cursor.close()
-        conn.close()
+        logging.info("Бот остановлен")
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 import pytest
 
-from db.crud import save_one, delete_one, get_many_by_filters, save_many, delete_many
-from db.database import create_tables
-from db.models import TestTable
-from tests.db.conftest import drop_test_table
+from bot_app.db import save_one, delete_one, get_many_by_filters, save_many, delete_many
+from bot_app.db import create_tables
+from bot_app.db.models import TestTable
+from bot_app.shared import drop_test_table
 
 
 @pytest.mark.asyncio

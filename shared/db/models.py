@@ -20,8 +20,8 @@ class All_(Base):
     url = Column(String)
 
 
-class TestTable(Base):
-    __tablename__ = 'test_table'
-
-    id = Column(Integer, primary_key=True)
-    user_name = Column(String)
+# class TestTable(Base):
+#     __tablename__ = 'test_table'
+#
+#     id = Column(Integer, primary_key=True)
+#     user_name = Column(String)

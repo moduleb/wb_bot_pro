@@ -1,7 +1,6 @@
 from urllib.parse import urlparse
 
 import requests
-
 from bot_app import config
 
 

@@ -1,8 +1,8 @@
 import pytest
 
-from db.models import Base, TestTable
+from bot_app.db.models import Base, TestTable
 
-from db.database import engine, create_tables
+from bot_app.db import engine, create_tables
 
 
 async def drop_test_table():

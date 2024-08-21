@@ -6,11 +6,13 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from bot_app import text, parser
-from db import service
-from bot_app.bot_ import kb
-from bot_app.bot_.states import State_
-from bot_app.parser import ParserError
+
+import text
+import kb
+from shared import parser
+from shared.db import service
+from bot_app.states import State_
+from shared.parser import ParserError
 
 router = Router()
 
@@ -92,7 +94,7 @@ async def add(msg: Message, state: FSMContext):
         title = parser.get_title(data)
 
         # Проверяем на дубликаты
-        if obj := await service.get_item_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
+        if await service.get_item_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
             sent_msg = await msg.answer(text=text.item_duplicate, reply_markup=kb.menu)
             sent_msgs.append(sent_msg)
             return
