@@ -9,6 +9,10 @@ celery -A celery_app.run worker --beat --loglevel=info
 celery -A tasks flower
 ```
 
+docker exec -it redis redis-cli
+SUBSCRIBE price_change_channel
+
+
 #
 # # Отправляем задачу в очередь
 # result = square.delay()
