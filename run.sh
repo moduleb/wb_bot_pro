@@ -94,7 +94,7 @@ done
 
 
 # Запуск Celery
-#celery -A celery_app.celery_config worker --beat --loglevel=info &
+celery -A celery_app.run worker --beat --loglevel=info &
 
 # Запускаем бота
 
