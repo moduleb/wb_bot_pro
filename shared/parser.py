@@ -1,8 +1,7 @@
 from urllib.parse import urlparse
 
 import requests
-from bot_app import config
-
+base_url = 'https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=-1257786&spp=30&nm={item_id}'
 
 class ParserError(Exception):
     pass
@@ -26,7 +25,7 @@ def get_item_id(url):
 
 def get_data(item_id) -> dict:
 
-    api_url = config.base_url.format(item_id=item_id)
+    api_url = base_url.format(item_id=item_id)
 
     if result := requests.get(url=api_url).json():
         return result

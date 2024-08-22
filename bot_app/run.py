@@ -16,7 +16,9 @@ from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
+
 from handlers import router
+from shared.db.service import create_tables
 
 commands = [
     types.BotCommand(command="/start", description="Начать диалог"),
@@ -26,9 +28,9 @@ commands = [
 dp = Dispatcher(storage=MemoryStorage())
 bot = Bot(token=config.TOKEN)
 
-
 async def main():
     dp.include_router(router)
+    await create_tables()
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:

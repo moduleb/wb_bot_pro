@@ -29,6 +29,7 @@ fi
 # Загрузка переменных окружения из файла .env
 if [ -f .env ]; then
     export $(grep -v '^#' .env | xargs)
+    echo $(grep -v '^#' .env | xargs)
 else
     echo "Файл .env не найден!"
     exit 1
@@ -50,13 +51,26 @@ for i in {1..10}; do
         break
     else
         echo "База данных PostgreSQL недоступна."
-        echo "Запуск контейнера PostgreSQL..."
-        docker run --name postgres -e POSTGRES_USER=$POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -e POSTGRES_DB=$POSTGRES_DB_NAME -d postgres
+
+        # Проверяем, существует ли контейнер
+        if [ "$(docker ps -aq -f name=postgres)" ]; then
+            echo "Контейнер с именем 'postgres' уже существует. Запускаем его..."
+            docker start postgres
+        else
+            echo "Запуск нового контейнера PostgreSQL..."
+            docker run --name postgres \
+              -e POSTGRES_USER=$POSTGRES_USER \
+              -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+              -p $POSTGRES_PORT:$POSTGRES_PORT \
+              -e POSTGRES_DB=$POSTGRES_DB_NAME \
+              -d postgres
+        fi
+
         sleep 1
     fi
 done
 
-# Проверка доступности базы данных с помощью pg_isready внутри контейнера
+
 echo "Проверка доступности Redis..."
 for i in {1..10}; do
     if docker exec redis redis-cli ping | grep -q PONG; then
@@ -64,15 +78,25 @@ for i in {1..10}; do
         break
     else
         echo "Redis недоступен."
-        echo "Запуск контейнера Redis..."
-        docker run --name redis -d -p 6379:6379 redis
+
+        # Проверяем, существует ли контейнер
+        if [ "$(docker ps -aq -f name=redis)" ]; then
+            echo "Контейнер с именем 'redis' уже существует. Запускаем его..."
+            docker start redis
+        else
+            echo "Запуск нового контейнера Redis..."
+            docker run --name redis -d -p 6379:6379 redis
+        fi
+
         sleep 1
     fi
 done
+
 
 # Запуск Celery
 #celery -A celery_app.celery_config worker --beat --loglevel=info &
 
 # Запускаем бота
+
 echo "Запуск бота..."
 python3 bot_app/run.py

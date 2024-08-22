@@ -9,9 +9,12 @@ from aiogram.types import Message, CallbackQuery
 
 import text
 import kb
+
+
+
 from shared import parser
 from shared.db import service
-from bot_app.states import State_
+from states import State_
 from shared.parser import ParserError
 
 router = Router()

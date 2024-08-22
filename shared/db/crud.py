@@ -4,17 +4,16 @@ from typing import List, TypeVar, Dict
 
 from sqlalchemy.future import select
 
-# from .database import AsyncSession
 from .models import Base
-# from .session import async_session_scope
 
 
 # ----- CREATE -----
 # @async_session_scope
 async def save_one(session, obj) -> None:
     """Сохраняет объект в базу данных"""
-    await session.add(obj)
-    await session.commit()
+    print(obj)
+    session.add(obj)
+    session.commit()
 
 
 # @async_session_scope
@@ -28,12 +27,12 @@ async def save_many(session, objs: List[object]) -> None:
 # Определяем тип переменной для модели
 M = TypeVar('M', bound=Base)
 
+
 # @async_session_scope
 async def get_many_by_filters(
         session,
         model: M,
         **filters: Dict[str, str | int]) -> list[M]:
-
     # Начинаем строить запрос
     query = select(model)
 
@@ -54,7 +53,7 @@ async def get_many_by_filters(
 async def delete_one(session, obj) -> None:
     """Удаляет объект из базы данных"""
     await session.delete(obj)
-    await session.commit()
+    session.commit()
 
 
 # @async_session_scope
@@ -63,4 +62,4 @@ async def delete_many(session, objs: List[object]) -> None:
     # Удаляем каждый объект из сессии
     for obj in objs:
         await session.delete(obj)
-    await session.commit()
+    session.commit()
