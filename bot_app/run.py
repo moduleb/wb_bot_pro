@@ -12,10 +12,12 @@ Dы указываете боту удалить текущий вебхук.
 import asyncio
 import logging
 
+import redis
 from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
+from bot_app.notification import listen_price_changes
 
 from handlers import router
 from shared.db.service import create_tables
@@ -27,6 +29,11 @@ commands = [
 
 dp = Dispatcher(storage=MemoryStorage())
 bot = Bot(token=config.TOKEN)
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+
+
+
 
 async def main():
     dp.include_router(router)
@@ -34,8 +41,13 @@ async def main():
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:
+        # Запускаем прослушку очереди Redis и отправку сообщений
+        asyncio.create_task(listen_price_changes(bot, redis_client))
+
+        # Запускаем бот
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),
                                close_bot_session=True)
+
     finally:
         logging.info("Бот остановлен")
 
@@ -43,6 +55,3 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
-
-
-

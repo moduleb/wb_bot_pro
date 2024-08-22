@@ -68,7 +68,8 @@ def notify_price_changes():
                 data = {
                     "title":item.title,
                     "old_price": item.price,
-                    "new_price": new_price
+                    "new_price": new_price,
+                    'user_id': item.user_id
                 }
 
                 add_to_queue.delay(data)
