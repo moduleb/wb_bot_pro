@@ -11,3 +11,5 @@ alembic
 sqlalchemy
 asyncpg
 asgiref
+websockets
+fastapi

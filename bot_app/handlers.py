@@ -5,12 +5,11 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-
-
+import websockets
 import text
 import kb
-
-
+import config
+from ws import ws_manager
 
 from shared import parser
 from shared.db import service
@@ -18,6 +17,9 @@ from states import State_
 from shared.parser import ParserError
 
 router = Router()
+
+
+
 
 
 async def delete_msgs(bot: Bot, msgs: list[Message]) -> None:
@@ -37,6 +39,7 @@ async def start_handler(msg: Message, state: FSMContext):
 
     sent_msgs = []
     sent_msg = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
+    await ws_manager.send(f"hello from bot {msg}")
     sent_msgs.append(sent_msg)
 
     # Записываем сообщения для последующего удаления

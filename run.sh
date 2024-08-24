@@ -93,10 +93,9 @@ for i in {1..10}; do
 done
 
 
-# Запуск Celery
-celery -A celery_app.run worker --beat --loglevel=info &
-
 # Запускаем бота
-
 echo "Запуск бота..."
 python3 bot_app/run.py
+
+# Запуск Celery
+#celery -A celery_app.run worker --beat --loglevel=info &

@@ -17,7 +17,7 @@ from aiogram import Dispatcher, types, Bot
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import config
-from bot_app.notification import listen_price_changes
+from ws import ws_manager
 
 from handlers import router
 from shared.db.service import create_tables
@@ -41,14 +41,13 @@ async def main():
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:
-        # Запускаем прослушку очереди Redis и отправку сообщений
-        asyncio.create_task(listen_price_changes(bot, redis_client))
-
+        await ws_manager.connect()
         # Запускаем бот
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),
                                close_bot_session=True)
 
     finally:
+        await ws_manager.close()
         logging.info("Бот остановлен")
 
 
