@@ -25,8 +25,8 @@ class ParserService(ParserServiceServicer):
         # Возвращаем ответ с названием и ценой
         return ItemResponse(
             title=data.get("title"),
-            price=data.get("price")
-
+            price=data.get("price"),
+            item_id = data.get("item_id")
         )
 
 
