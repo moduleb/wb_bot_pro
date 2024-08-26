@@ -1,10 +1,11 @@
-# db/models.py
+"""
+Database Models
+"""
 
 from sqlalchemy import Column, Integer, String, BigInteger
 from sqlalchemy.orm import DeclarativeBase
 
 
-# Base = declarative_base()
 class Base(DeclarativeBase):
     pass
 
@@ -18,7 +19,6 @@ class All_(Base):
     price = Column(Integer)
     title = Column(String)
     url = Column(String)
-
 
 # class TestTable(Base):
 #     __tablename__ = 'test_table'

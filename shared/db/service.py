@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from . import crud, config
-from .models import All_, Base
+from shared.db_models import All_, Base
 
 # Создание асинхронного движка
 engine = create_async_engine(config.DATABASE_URL, echo=True)
@@ -19,6 +19,8 @@ async def insert(user_id, item_id, price, title, url) -> None:
                title=str(title),
                url=str(url)
                )
+    print("insert", obj)
+
     async with AsyncSessionLocal() as session:
         await crud.save_one(session, obj)
 
@@ -44,5 +46,6 @@ async def get_all():
 
 
 async def delete(user_id, item_id) -> None:
-    obj = await get_item_by_user_id_and_item_id(int(user_id), int(item_id))
-    await crud.delete_one(obj)
+    async with AsyncSessionLocal() as session:
+        obj = await get_item_by_user_id_and_item_id(int(user_id), int(item_id))
+    await crud.delete_one(session, obj)

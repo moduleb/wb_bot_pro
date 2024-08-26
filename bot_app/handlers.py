@@ -1,24 +1,23 @@
+
 from typing import Union
+
 
 from aiogram import Router, F, Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-import websockets
-import text
+
 import kb
-import config
+import text
+from parser_func import parser
+
+from shared.db import service
+
+from states import State_
 from ws import ws_manager
 
-from shared import parser
-from shared.db import service
-from states import State_
-from shared.parser import ParserError
-
 router = Router()
-
-
 
 
 
@@ -39,10 +38,9 @@ async def start_handler(msg: Message, state: FSMContext):
 
     sent_msgs = []
     sent_msg = await msg.answer(text.greet.format(name=msg.from_user.full_name), reply_markup=kb.menu)
-    await ws_manager.send(f"hello from bot {msg}")
-    sent_msgs.append(sent_msg)
 
     # Записываем сообщения для последующего удаления
+    sent_msgs.append(sent_msg)
     data['msgs'] = sent_msgs
     await state.set_data(data)
 
@@ -59,6 +57,15 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
     user_id = event.from_user.id
     bot = event.bot
     sent_msgs = []
+
+    # Формируем сообщение для отправки по websocket
+    message = {
+        "action": "get_all",
+        "user_id": event.from_user.id
+    }
+
+    # Отправляем сообщение по websocket
+    response = await ws_manager.send(message)
 
     if items := await service.get_items_by_user_id(user_id):
         for item in items:
@@ -85,6 +92,7 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
 
 @router.message(State_.wait_for_url)
 async def add(msg: Message, state: FSMContext):
+
     # Удаляем предыдущие сообщения
     data = await state.get_data()
     await delete_msgs(msg.bot, data.get('msgs'))
@@ -94,16 +102,24 @@ async def add(msg: Message, state: FSMContext):
     sent_msgs = []
 
     try:
-        item_id = parser.get_item_id(url)
-        data = parser.get_data(item_id)
-        price = parser.get_price(data)
-        title = parser.get_title(data)
+        data = await parser(url)
+        price = data.get("price")
+        title = data.get("title")
+        item_id = data.get("item_id")
 
-        # Проверяем на дубликаты
-        if await service.get_item_by_user_id_and_item_id(user_id=user_id, item_id=item_id):
-            sent_msg = await msg.answer(text=text.item_duplicate, reply_markup=kb.menu)
-            sent_msgs.append(sent_msg)
-            return
+        # Формируем сообщение для отправки по websocket
+        message = {
+            "action": "create",
+            "user_id": user_id,
+            "price":price,
+            "title":title,
+            "url": url,
+            "item_id": item_id
+        }
+        print(message)
+
+        # Отправляем сообщение по websocket
+        # response = await ws_manager.send(message)
 
         # Сохраняем в бд
         await service.insert(user_id=user_id,
@@ -116,7 +132,8 @@ async def add(msg: Message, state: FSMContext):
         sent_msg = await msg.answer(text=text.item_added, reply_markup=kb.menu)
         sent_msgs.append(sent_msg)
 
-    except ParserError as e:
+
+    except KeyError as e:
         sent_msg = await msg.reply(str(e),
                                    disable_web_page_preview=True)
         sent_msgs.append(sent_msg)
@@ -128,6 +145,20 @@ async def add(msg: Message, state: FSMContext):
 
 @router.callback_query(F.data.startswith("del"))
 async def delete(callback: CallbackQuery):
+
+    user_id = callback.from_user.id
+    item_id = callback.data.split('_')[1]
+
+    # Формируем сообщение для отправки по websocket
+    message = {
+        "action": "delete",
+        "user_id": user_id,
+        "item_id": item_id,
+    }
+
+    # Отправляем сообщение по websocket
+    response = await ws_manager.send(message)
+
     await service.delete(user_id=callback.from_user.id,
                          item_id=callback.data.split('_')[1])
     await callback.message.delete()

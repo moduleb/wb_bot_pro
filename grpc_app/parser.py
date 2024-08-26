@@ -1,13 +1,25 @@
 from urllib.parse import urlparse
 
 import requests
-base_url = 'https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=-1257786&spp=30&nm={item_id}'
+
 
 class ParserError(Exception):
     pass
 
 
-def get_item_id(url):
+def get_item_info(url: str):
+    item_id = _get_item_id(url)
+    data = _get_data(item_id)
+    price = _get_price(data)
+    title = _get_title(data)
+    return {
+        "price": price,
+        "title": title,
+        "item_id": item_id
+    }
+
+
+def _get_item_id(url):
     try:
         result = urlparse(url)
         if result.scheme != 'https' or result.netloc != 'www.wildberries.ru':
@@ -23,7 +35,8 @@ def get_item_id(url):
         raise ParserError("Неправильный формат id") from e
 
 
-def get_data(item_id) -> dict:
+def _get_data(item_id) -> dict:
+    base_url = 'https://card.wb.ru/cards/v2/detail?appType=1&curr=rub&dest=-1257786&spp=30&nm={item_id}'
 
     api_url = base_url.format(item_id=item_id)
 
@@ -33,7 +46,7 @@ def get_data(item_id) -> dict:
         raise ParserError('Данные не получены')
 
 
-def get_price(data):
+def _get_price(data):
     try:
         price = data['data']['products'][0]['sizes'][0]['price']['total']
 
@@ -50,7 +63,7 @@ def get_price(data):
         return int(price) // 100
 
 
-def get_title(data):
+def _get_title(data):
     try:
         return data['data']['products'][0]['name']
     except Exception as e:

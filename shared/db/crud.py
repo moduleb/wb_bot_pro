@@ -4,7 +4,7 @@ from typing import List, TypeVar, Dict
 
 from sqlalchemy.future import select
 
-from .models import Base
+from shared.db_models import Base
 
 
 # ----- CREATE -----
@@ -13,7 +13,7 @@ async def save_one(session, obj) -> None:
     """Сохраняет объект в базу данных"""
     print(obj)
     session.add(obj)
-    session.commit()
+    await session.commit()
 
 
 # @async_session_scope
@@ -53,7 +53,7 @@ async def get_many_by_filters(
 async def delete_one(session, obj) -> None:
     """Удаляет объект из базы данных"""
     await session.delete(obj)
-    session.commit()
+    await session.commit()
 
 
 # @async_session_scope

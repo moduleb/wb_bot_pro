@@ -13,3 +13,5 @@ asyncpg
 asgiref
 websockets
 fastapi
+grpcio
+grpcio-tools

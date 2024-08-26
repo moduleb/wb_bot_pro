@@ -6,27 +6,37 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from celery_app.run import app
-from shared import parser
-from shared.db.config import DATABASE_URL_SYNC
-from shared.db.models import All_
+from celery_app.shared import parser
+from celery_app.shared.db.config import DATABASE_URL_SYNC
+from celery_app.shared.db_models import All_
+import grpc
+
+from shared.grpc_models.service_pb2 import ItemRequest
+from shared.grpc_models.service_pb2_grpc import ParserServiceStub
+
+GRPC_CONNECTION_STRING = 'localhost:50051'
 
 engine = create_engine(DATABASE_URL_SYNC, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def model2dict(item):
     return {key: getattr(item, key) for key in item.__dict__ if not key.startswith('_')}
 
+
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 
 @app.task
 def add_to_queue(data):
-    print(f"Добавлено в очередь: {data}")
+    logging.debug(f"Добавлено в очередь: {data}")
 
     # Сериализуем словарь в строку JSON
     message = json.dumps(data)
 
     # Публикуем сообщение в Redis
     redis_client.publish('price_change_channel', message)
+
 
 @app.task
 def notify_price_changes():
@@ -39,62 +49,57 @@ def notify_price_changes():
         # Получаем все записи из бд
         items = db.query(All_).all()
 
-        for item in items:
+        logging.debug("Получено записей из бд: {}".format(len(items)))
 
-            # Получаем инфо о товаре и парсим прайс
-            data = parser.get_data(item.item_id)
-            new_price = parser.get_price(data)
+        # Парсим данные товара
+        with grpc.insecure_channel(GRPC_CONNECTION_STRING) as channel:
+            stub = ParserServiceStub(channel)
 
-            # Счетчик товаров, где цена изменилась
-            counter = 0
+            for item in items:
 
-            # Если цена изменилась, отправляем сообщение и обновляем инфо в бд
-            if item.price != new_price:
-                counter +=1
-                logging.debug("Изменилась цена на товар: {title}\n"
-                              "Старая цена: {old_price}. Новая цена: {new_price}.".format(
-                    title=item.title,
-                    old_price=item.price,
-                    new_price=new_price
-                ))
+                request = ItemRequest(url=item.url)
+                item_from_grps = stub.GetItemInfo(request)
 
+                # Получаем инфо о товаре и парсим прайс
+                new_price = item_from_grps.price
 
+                # Счетчик товаров, где цена изменилась
+                counter = 0
 
-                # Преобразовываем все атрибуты модели в словарь
-                # ПОЧЕМУ ТО ЧЕРЕЗ ЭТУ КОНСТРУКЦИЮ НЕ РАБОТАЕТ ИМЕННО В ЗАДАЧЕ, ОТДЕЛЬНО ВСЕ ОК
-                # data = {key: getattr(item, key) for key in item.__dict__ if not key.startswith('_')}
-                # data = model2dict(item)
+                # Если цена изменилась, отправляем сообщение и обновляем инфо в бд
+                if item.price != new_price:
+                    counter += 1
+                    logging.debug("Изменилась цена на товар: {title}\n"
+                                  "Старая цена: {old_price}. Новая цена: {new_price}.".format(
+                        title=item_from_grps.title,
+                        old_price=item.price,
+                        new_price=new_price
+                    ))
 
-                data = {
-                    "title":item.title,
-                    "old_price": item.price,
-                    "new_price": new_price,
-                    'user_id': item.user_id
-                }
+                    # Преобразовываем все атрибуты модели в словарь
+                    # ПОЧЕМУ ТО ЧЕРЕЗ ЭТУ КОНСТРУКЦИЮ НЕ РАБОТАЕТ ИМЕННО В ЗАДАЧЕ, ОТДЕЛЬНО ВСЕ ОК
+                    # data = {key: getattr(item, key) for key in item.__dict__ if not key.startswith('_')}
+                    # data = model2dict(item)
 
-                add_to_queue.delay(data)
+                    data = {
+                        "title": item_from_grps.title,
+                        "old_price": item.price,
+                        "new_price": new_price,
+                        'user_id': item.user_id
+                    }
 
-                # Сохраняем новый прайс
-                item.price = new_price
-                db.commit()
+                    add_to_queue.delay(data)
 
-                # Закрываем сессию
-                db.close()
-
-
-
-                return f"Изменен прайс у объектов: {counter}"
-
+                    # Сохраняем новый прайс
+                    item.price = new_price
+                    db.commit()
 
     except Exception as e:
         logging.error(str(e))
 
-#
-# db = SessionLocal()
-# items = db.query(All_).all()
-# item = items[0]
-#
-#
-#
-# data = model2dict(item)
-# print(data)
+    # Закрываем сессию
+    db.close()
+
+    return f"Изменен прайс у объектов: {counter}"
+
+

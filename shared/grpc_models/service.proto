@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package example;
+
+// Определяем сервис
+service ParserService {
+    // Определяем удаляемую функцию
+    rpc GetItemInfo (ItemRequest) returns (ItemResponse);
+}
+
+// Определяем сообщение запроса
+message ItemRequest {
+    string url = 1; // URL запрашиваемого элемента
+}
+
+// Определяем сообщение ответа с отдельными полями
+message ItemResponse {
+    string title = 1; // Название элемента
+    float price = 2; // Цена элемента
+    int32 item_id = 3; // Цена элемента
+}

@@ -1,10 +1,5 @@
 # db/database.py
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from .models import Base
-from . import config
-
 # Создание асинхронного движка
 #
 # engine = create_async_engine(config.DATABASE_URL, echo=True)
