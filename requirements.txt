@@ -1,8 +1,6 @@
 pytest
 pytest-asyncio
-
-aioredis
-    redis
+redis
 celery
 flowers
 aiogran
@@ -15,4 +13,4 @@ websockets
 fastapi
 grpcio
 grpcio-tools
-fastapi-admin
+
