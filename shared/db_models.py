@@ -20,6 +20,9 @@ class All_(Base):
     title = Column(String)
     url = Column(String)
 
+# admin.register(All_)
+
+
 # class TestTable(Base):
 #     __tablename__ = 'test_table'
 #

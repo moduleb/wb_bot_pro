@@ -1,4 +1,4 @@
-
+import json
 from typing import Union
 
 
@@ -61,18 +61,20 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
     # Формируем сообщение для отправки по websocket
     message = {
         "action": "get_all",
-        "user_id": event.from_user.id
+        "user_id": user_id
     }
 
     # Отправляем сообщение по websocket
-    response = await ws_manager.send(message)
+    response_row = await ws_manager.send(message)
+    response_dict = json.loads(response_row)
+    items = response_dict.get("data")
 
-    if items := await service.get_items_by_user_id(user_id):
+    if items:
         for item in items:
             sent_msg = await bot.send_message(
                 chat_id=user_id,
-                text=text.item_info.format(title=item.title, price=item.price, url=item.url),
-                reply_markup=kb.stop(item.item_id),
+                text=text.item_info.format(title=item.get("title"), price=item.get("price"), url=item.get("url")),
+                reply_markup=kb.stop(item.get("item_id")),
                 parse_mode="Markdown",
                 disable_web_page_preview=True)
             sent_msgs.append(sent_msg)
@@ -92,14 +94,14 @@ async def items_list(event: Union[CallbackQuery, Message], state: FSMContext):
 
 @router.message(State_.wait_for_url)
 async def add(msg: Message, state: FSMContext):
+    url = msg.text
+    bot = msg.bot
+    user_id = msg.from_user.id
+    sent_msgs = []
 
     # Удаляем предыдущие сообщения
     data = await state.get_data()
-    await delete_msgs(msg.bot, data.get('msgs'))
-
-    url = msg.text
-    user_id = msg.from_user.id
-    sent_msgs = []
+    await delete_msgs(bot, data.get('msgs'))
 
     try:
         data = await parser(url)
@@ -116,20 +118,22 @@ async def add(msg: Message, state: FSMContext):
             "url": url,
             "item_id": item_id
         }
-        print(message)
 
         # Отправляем сообщение по websocket
-        # response = await ws_manager.send(message)
-
-        # Сохраняем в бд
-        await service.insert(user_id=user_id,
-                             item_id=item_id,
-                             price=price,
-                             title=title,
-                             url=url)
+        response_row = await ws_manager.send(message)
+        try:
+            response_dict = json.loads(response_row)
+        except Exception as e:
+            print(str(e))
+            response_dict = {}
 
         # Уведомляем об успехе
-        sent_msg = await msg.answer(text=text.item_added, reply_markup=kb.menu)
+        if response_dict.get("success"):
+            msg_to_send = text.item_added
+        else:
+            msg_to_send = text.error
+
+        sent_msg = await msg.answer(text=msg_to_send, reply_markup=kb.menu)
         sent_msgs.append(sent_msg)
 
 

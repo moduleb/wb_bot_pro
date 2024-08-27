@@ -37,7 +37,7 @@ redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 async def main():
     dp.include_router(router)
-    await create_tables()
+    # await create_tables()
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:

@@ -1,14 +1,17 @@
-# Хранение активных соединений
+
 import json
 import logging
 
+import asyncpg
 from fastapi import APIRouter
 from fastapi import WebSocket, WebSocketDisconnect
 
+from shared.db import service
 
 connections = []
 
 router = APIRouter()
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -24,26 +27,70 @@ async def websocket_endpoint(websocket: WebSocket):
             action = message_dict.get("action")
             item_id = message_dict.get("item_id")
             user_id = message_dict.get("user_id")
+            price = message_dict.get("price")
+            title = message_dict.get("title")
+            url = message_dict.get("url")
 
-            # Обработка сообщения
+
             if action == "get_all":
 
-                # Логика для получения всех записей для user_id
-                await websocket.send_text(f"Получены записи для user_id {user_id}")
+                data = await service.get_items_by_user_id(user_id)
+                data_to_send = []
+                for item in data:
+                    data_to_send.append({
+                        "url":item.url,
+                        "price": item.price,
+                        "title":item.title,
+                        "item_id":item.item_id
+                    })
 
-                data = {"user_id": user_id,
-                        "price": 20}
-
-                message = {
-                    "success":True,
-                    "data":data
+                message_dict = {
+                    "success": True,
+                    "data": data_to_send
                 }
 
-                await websocket.send_text(json.dumps(message))
+                print(message_dict)
+
+                message_json = json.dumps(message_dict)
+
+                await websocket.send_text(message_json)
+
 
             elif action == "delete":
+
                 # Логика для удаления записи с item_id
                 await websocket.send_text(f"Удалена запись с item_id {item_id} для user_id {user_id}")
+
+            elif action == "create":
+                try:
+                    # Сохраняем в бд
+                    await service.insert(user_id=user_id,
+                                         item_id=item_id,
+                                         price=price,
+                                         title=title,
+                                         url=url)
+
+                    message_dict = {
+                        "success": True
+                    }
+
+                except asyncpg.InterfaceError as e:
+                    message_dict = {
+                        "success": False,
+                        "message": "База данных недоступна.\n Error: {}".format(e)
+                    }
+
+                message_json = json.dumps(message_dict)
+                await websocket.send_text(message_json)
+
+            else:
+                message_dict = {
+                    "success": False,
+                    "message": "Операция не поддерживается: {}".format(action)
+                }
+                message_json = json.dumps(message_dict)
+                await websocket.send_text(message_json)
+
 
     except WebSocketDisconnect:
         connections.remove(websocket)

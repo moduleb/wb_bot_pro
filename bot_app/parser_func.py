@@ -22,10 +22,6 @@ async def parser(url):
         }
         """
 
-        print("Client received Item:")
-        print(f"Title: {item.title}")
-        print(f"Price: {item.price}")
-
         return {
             "title": item.title,
             "price": item.price,

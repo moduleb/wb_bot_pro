@@ -1,11 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
+# from fastapi_admin.app import FastAPIAdmin
 from starlette.responses import RedirectResponse
 
 from fastapi_app import views
 
 # Создание приложения
 app = FastAPI(title="WB_BOT_PRO")
+# admin = FastAPIAdmin()
+
 app.include_router(views.router, tags=["Websocket"])
 
 # Redirect на страницу документации при обращении на "/"
