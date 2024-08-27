@@ -12,7 +12,6 @@ import kb
 import text
 from parser_func import parser
 
-from shared.db import service
 
 from states import State_
 from ws import ws_manager
@@ -161,8 +160,8 @@ async def delete(callback: CallbackQuery):
     }
 
     # Отправляем сообщение по websocket
-    response = await ws_manager.send(message)
+    await ws_manager.send(message)
 
-    await service.delete(user_id=callback.from_user.id,
-                         item_id=callback.data.split('_')[1])
+    # await service.delete(user_id=callback.from_user.id,
+    #                      item_id=callback.data.split('_')[1])
     await callback.message.delete()

@@ -1,4 +1,3 @@
-
 import json
 import logging
 
@@ -6,7 +5,7 @@ import asyncpg
 from fastapi import APIRouter
 from fastapi import WebSocket, WebSocketDisconnect
 
-from shared.db import service
+from db import service
 
 connections = []
 
@@ -31,25 +30,22 @@ async def websocket_endpoint(websocket: WebSocket):
             title = message_dict.get("title")
             url = message_dict.get("url")
 
-
             if action == "get_all":
 
                 data = await service.get_items_by_user_id(user_id)
                 data_to_send = []
                 for item in data:
                     data_to_send.append({
-                        "url":item.url,
+                        "url": item.url,
                         "price": item.price,
-                        "title":item.title,
-                        "item_id":item.item_id
+                        "title": item.title,
+                        "item_id": item.item_id
                     })
 
                 message_dict = {
                     "success": True,
                     "data": data_to_send
                 }
-
-                print(message_dict)
 
                 message_json = json.dumps(message_dict)
 
@@ -58,8 +54,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
             elif action == "delete":
 
-                # Логика для удаления записи с item_id
-                await websocket.send_text(f"Удалена запись с item_id {item_id} для user_id {user_id}")
+                await service.delete(user_id=user_id,
+                                     item_id=item_id)
+                message_dict = {
+                    "success": True
+                }
+                message_json = json.dumps(message_dict)
+
+                await websocket.send_text(message_json)
 
             elif action == "create":
                 try:

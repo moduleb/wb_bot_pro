@@ -6,8 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from celery_app.run import app
-from celery_app.shared import parser
-from celery_app.shared.db.config import DATABASE_URL_SYNC
+from celery_app.tasks.config import DATABASE_URL_SYNC
 from celery_app.shared.db_models import All_
 import grpc
 

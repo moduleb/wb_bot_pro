@@ -30,7 +30,7 @@ class WebSocketManager:
 
                 await self.websocket.send(json.dumps(message))
                 response = await self.get()
-                logging.info(f"Response from server: {response}")
+                # logging.info(f"Response from server: {response}")
                 return response
 
             except (websockets.ConnectionClosed, websockets.InvalidStatusCode) as e:

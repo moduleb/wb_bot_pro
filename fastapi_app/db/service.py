@@ -28,8 +28,8 @@ async def insert(user_id, item_id, price, title, url) -> None:
 async def get_item_by_user_id_and_item_id(user_id, item_id):
     async with AsyncSessionLocal() as session:
         objs = await crud.get_many_by_filters(session, model=All_,
-                                          user_id=int(user_id),
-                                          item_id=int(item_id))
+                                              user_id=int(user_id),
+                                              item_id=int(item_id))
     return objs[0] if objs else []
 
 
