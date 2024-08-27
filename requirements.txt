@@ -1,5 +1,16 @@
+pytest
+pytest-asyncio
 redis
 celery
 flowers
 aiogran
 python-dotenv
+alembic
+sqlalchemy
+asyncpg
+asgiref
+websockets
+fastapi
+grpcio
+grpcio-tools
+
