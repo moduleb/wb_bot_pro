@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 *.db
 pg_data/
+celerybeat-schedule.db
