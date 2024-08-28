@@ -5,8 +5,8 @@ import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from grpc_celery.celery_app import config
-from grpc_celery.celery_app.run import app
+import config
+from run import app
 from shared.db_models import All_
 import grpc
 
@@ -45,6 +45,9 @@ def notify_price_changes():
     # Открываем сессию
     db = SessionLocal()
 
+    # Счетчик товаров, где цена изменилась
+    counter = 0
+
     try:
         # Получаем все записи из бд
         items = db.query(All_).all()
@@ -62,9 +65,6 @@ def notify_price_changes():
 
                 # Получаем инфо о товаре и парсим прайс
                 new_price = item_from_grps.price
-
-                # Счетчик товаров, где цена изменилась
-                counter = 0
 
                 # Если цена изменилась, отправляем сообщение и обновляем инфо в бд
                 if item.price != new_price:

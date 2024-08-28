@@ -31,6 +31,11 @@ services:
     volumes:
       - ./shared:/app/grpc_app/shared
       - ./shared:/app/celery_app/shared
+    env_file:
+      - .env
+    environment:
+      REDIS_HOST: redis
+      POSTGRES_HOST: postgres
 
   fastapi:
     container_name: fastapi

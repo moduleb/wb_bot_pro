@@ -13,4 +13,6 @@ websockets
 fastapi
 grpcio
 grpcio-tools
+requests
+sycopg2-binary
 
