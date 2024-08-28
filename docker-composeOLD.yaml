@@ -1,0 +1,39 @@
+services:
+  web:
+    build:
+      context: ./web
+    container_name: web
+    # ports:
+      # - "8000:80"
+    depends_on:
+      - mongo
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    # ports:
+      # - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    environment:
+      - WIRETIGER_CACHE_SIZE_GB=0.25  # азмер кэша WiredTiger в 256 МБ
+
+  bot:
+    build:
+      context: ./bot
+    container_name: bot
+    depends_on:
+      - web
+    env_file:
+      - ../../Downloads/.env

@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.responses import RedirectResponse
 
-from fastapi_app import views
+import views
 
 # Создание приложения
 app = FastAPI(title="WB_BOT_PRO")

@@ -1,16 +1,13 @@
-pytest
-pytest-asyncio
-redis
-celery
-flowers
-aiogram
 python-dotenv
-alembic
 sqlalchemy
 asyncpg
 asgiref
+alembic
 websockets
 fastapi
+uvicorn
 grpcio
 grpcio-tools
+psycopg2-binary
+
 
