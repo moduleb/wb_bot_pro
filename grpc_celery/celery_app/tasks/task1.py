@@ -5,17 +5,17 @@ import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from celery_app.run import app
-from celery_app.tasks.config import DATABASE_URL_SYNC
-from celery_app.shared.db_models import All_
+from grpc_celery.celery_app import config
+from grpc_celery.celery_app.run import app
+from shared.db_models import All_
 import grpc
 
 from shared.grpc_models.service_pb2 import ItemRequest
 from shared.grpc_models.service_pb2_grpc import ParserServiceStub
 
-GRPC_CONNECTION_STRING = 'localhost:50051'
 
-engine = create_engine(DATABASE_URL_SYNC, echo=True)
+
+engine = create_engine(config.DATABASE_URL_SYNC, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -23,7 +23,8 @@ def model2dict(item):
     return {key: getattr(item, key) for key in item.__dict__ if not key.startswith('_')}
 
 
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+# redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_client = redis.from_url(config.REDIS_CONNECTION_STRING)
 
 
 @app.task
@@ -51,7 +52,7 @@ def notify_price_changes():
         logging.debug("Получено записей из бд: {}".format(len(items)))
 
         # Парсим данные товара
-        with grpc.insecure_channel(GRPC_CONNECTION_STRING) as channel:
+        with grpc.insecure_channel(config.GRPC_CONNECTION_STRING) as channel:
             stub = ParserServiceStub(channel)
 
             for item in items:

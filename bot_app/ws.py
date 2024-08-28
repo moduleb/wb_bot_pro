@@ -58,4 +58,4 @@ class WebSocketManager:
             logging.info("WebSocket connection closed.")
 
 # Создание экземпляра WebSocketManager
-ws_manager = WebSocketManager(config.WS_URL)
+ws_manager = WebSocketManager(config.WEBSOCKET_CONNECTION_STRING)

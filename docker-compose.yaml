@@ -12,12 +12,8 @@ services:
   postgres:
     container_name: postgres
     image: postgres:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: passw53
-      POSTGRES_DB: db53
-      PGPORT: 5432
-      POSTGRES_HOST: postgres
+    env_file:
+      - .env
 #    ports:
 #      - "5435:5432"
     volumes:
@@ -28,34 +24,32 @@ services:
       timeout: 5s
       retries: 5
 
-  grpc:
-    container_name: grpc
+  grpc_celery:
+    container_name: grpc_celery
     build:
-      context: ./grpc_app
-        # ports:
-        # - "8000:80"
+      context: grpc_celery
     volumes:
-      - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
+      - ./shared:/app/grpc_app/shared
+      - ./shared:/app/celery_app/shared
 
   fastapi:
     container_name: fastapi
     build:
       context: ./fastapi_app
-#      ЗАПУСТИТЬ ЮНИКОРНОМ ОТСЮДА
-      # ports:
-      # - "8000:80"
+#    ports:
+#     - "8000:80"
     volumes:
       - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
-      - ./shared:/app/db/shared  # Монтируем локальную папку shared в контейнер
+      - ./shared:/app/db/shared  # Иначе нет доступа к моделям
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: passw53
-      POSTGRES_DB: db53
-      PGPORT: 5432
       POSTGRES_HOST: postgres
+      GRPC_HOST: grpc_celery
+    command: uvicorn run:app --host 0.0.0.0 --port 8000
 
     depends_on:
-      grpc:
+      grpc_celery:
         condition: service_started
       postgres:
         condition: service_healthy
@@ -69,8 +63,10 @@ services:
     env_file:
       - .env
     environment:
-      WS_URL: ws://fastapi:8000/ws
-      GRPC_CONNECTION_STRING: grpc:50051
+      WEBSOCKET_HOST: fastapi
+#      убрать GRPC после того как перенесу в фастапи
+      GRPC_HOST: grpc_celery
+      REDIS_HOST: redis
     volumes:
       - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
     depends_on:
@@ -78,7 +74,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      grpc:
+      grpc_celery:
         condition: service_started
       fastapi:
         condition: service_started
@@ -96,7 +92,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      grpc:
+      grpc_celery:
         condition: service_started
       fastapi:
         condition: service_started

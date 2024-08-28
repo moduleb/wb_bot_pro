@@ -19,4 +19,4 @@ RUN pip install -r requirements.txt --no-cache-dir
 COPY . .
 
 # Запуск приложения
-CMD ["python", "run.py"]
+#CMD ["python", "run.py"]
