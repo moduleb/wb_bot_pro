@@ -52,14 +52,12 @@ services:
       POSTGRES_HOST: postgres
       GRPC_HOST: grpc_celery
     command: uvicorn run:app --host 0.0.0.0 --port 8000
-
     depends_on:
-      grpc_celery:
-        condition: service_started
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+      grpc_celery:
+        condition: service_started
+
 
   bot:
     build:
@@ -75,14 +73,29 @@ services:
     volumes:
       - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
-      grpc_celery:
-        condition: service_started
       fastapi:
         condition: service_started
+
+  django:
+    container_name: django
+    build:
+      context: ./django_app
+#    ports:
+#     - "8000:8000"
+#    volumes:
+#      - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
+#      - ./shared:/app/db/shared  # Иначе нет доступа к моделям
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: postgres
+    command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 
   nginx:
     image: nginx:latest
@@ -92,18 +105,19 @@ services:
       - "443:443"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./django_app/staticfiles:/django/staticfiles  # Монтируем том для статических файлов
+      - ./django_app/mediafiles:/django/mediafiles    # Монтируем том для медиафайлов
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      grpc_celery:
-        condition: service_started
       fastapi:
         condition: service_started
       bot:
         condition: service_started
+      django:
+        condition: service_started
 
+volumes:
+  static_volume:
+  media_volume:
 
 
 
