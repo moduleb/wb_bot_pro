@@ -14,5 +14,5 @@ fastapi
 grpcio
 grpcio-tools
 requests
-sycopg2-binary
+psycopg2-binary
 
