@@ -11,7 +11,7 @@ connections = []
 
 router = APIRouter()
 
-
+logging.basicConfig(level=logging.INFO)
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -34,6 +34,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 data = await service.get_items_by_user_id(user_id)
                 data_to_send = []
+                # logging.info(message_dict)
+                # data_to_send = [{
+                #     "url": "url",
+                #     "price": "200",
+                #     "title": "title",
+                #     "item_id": "item_id"
+                # }]
                 for item in data:
                     data_to_send.append({
                         "url": item.url,
@@ -99,3 +106,9 @@ async def websocket_endpoint(websocket: WebSocket):
 
     except Exception as e:
         logging.error(f"Error: {e}")
+        message_dict = {
+            "success": False,
+            "message": "Неизвестная ошибка: {}".format(e)
+        }
+        message_json = json.dumps(message_dict)
+        await websocket.send_text(message_json)

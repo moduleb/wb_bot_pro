@@ -3,4 +3,6 @@ __pycache__/
 .DS_Store
 .idea/
 .venv/
+*.db
+pg_data/
 celerybeat-schedule.db

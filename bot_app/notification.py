@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from bot_app import text
+import text
 
 
 async def listen_price_changes(bot, redis_client):
