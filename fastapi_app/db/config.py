@@ -1,23 +1,18 @@
-
 import os
 
-from dotenv import load_dotenv
 
-load_dotenv()
+def load_env_or_default(variable_name, default):
+    if var := os.getenv(variable_name):
+        pass
+    else:
+        var = default
+    return var
 
-# ----- DATABASE -----
-DB_HOST = os.getenv("POSTGRES_HOST")
-DB_PORT = os.getenv("POSTGRES_PORT")
-DB_NAME = os.getenv("POSTGRES_DB_NAME")
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-DATABASE_URL = f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
-DATABASE_URL_SYNC = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 
-# DB_TEST_NAME = "test"
-# DATABASE_TEST__URL = f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_TEST_NAME}'
+""" DATABASE """
+POSTGRES_USER = load_env_or_default('POSTGRES_USER', 'local')
+POSTGRES_PASSWORD = load_env_or_default('POSTGRES_PASSWORD', 'local')
+POSTGRES_HOST = load_env_or_default('POSTGRES_HOST', 'localhost')
+POSTGRES_DB = load_env_or_default('POSTGRES_DB', 'local')
+DATABASE_URL = f'postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
 
-# ----- REDIS -----
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
-REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"

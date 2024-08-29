@@ -3,7 +3,7 @@ pytest-asyncio
 redis
 celery
 flowers
-aiogran
+aiogram
 python-dotenv
 alembic
 sqlalchemy
@@ -13,4 +13,7 @@ websockets
 fastapi
 grpcio
 grpcio-tools
+requests
+psycopg2-binary
+django
 

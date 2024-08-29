@@ -1,0 +1,9 @@
+redis
+aiogram>=0.0.0
+python-dotenv
+asgiref
+websockets
+grpcio
+grpcio-tools
+
+

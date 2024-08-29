@@ -30,17 +30,16 @@ commands = [
 dp = Dispatcher(storage=MemoryStorage())
 bot = Bot(token=config.TOKEN)
 
-# redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-
 async def main():
     dp.include_router(router)
     # await create_tables()
     redis_client = await aioredis.from_url("redis://localhost")
+    redis_client = await aioredis.from_url(config.REDIS_CONNECTION_STRING)
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:
         task = asyncio.create_task(listen_price_changes(bot, redis_client))
-        # await ws_manager.connect()
+        await ws_manager.connect()
 
         # Запускаем бот
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(),

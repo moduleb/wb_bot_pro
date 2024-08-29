@@ -11,6 +11,9 @@ alembic init migrations
 [alembic.ini]
 sqlalchemy.url = postgresql://username:password@localhost/dbname
 
+# получить ip контейнера
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres  
+
 [migrations/.env]
 from models import Base
 target_metadata = Base.metadata
