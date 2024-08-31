@@ -55,22 +55,22 @@ services:
       fastapi:
         condition: service_started
 
-  django:
-    container_name: django
-    build:
-      context: ./django_app
-    deploy:
-      replicas: 1
-#    ports:
-#     - "8000:8000"
-#    volumes:
-#      - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
-#      - ./shared:/app/db/shared  # Иначе нет доступа к моделям
-    env_file:
-      - .env
-    environment:
-      POSTGRES_HOST: 192.168.0.3
-    command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
+#  django:
+#    container_name: django
+#    build:
+#      context: ./django_app
+#    deploy:
+#      replicas: 1
+##    ports:
+##     - "8000:8000"
+##    volumes:
+##      - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
+##      - ./shared:/app/db/shared  # Иначе нет доступа к моделям
+#    env_file:
+#      - .env
+#    environment:
+#      POSTGRES_HOST: 192.168.0.3
+#    command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
 
 
   nginx:
