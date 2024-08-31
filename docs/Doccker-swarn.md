@@ -63,16 +63,40 @@ scp -P 53 wb_bot_pro-grpc_celery.tar user@other-node:/path/to/save
 ssh user@other-node
 docker load -i /path/to/save/wb_bot_pro-grpc_celery.tar
 
+
 # Читаем переменные из .env и создаем команду
 env_file=".env"
 env_vars=$(grep -v '^#' "$env_file" | sed 's/^/--env /')
 
 # Создаем сервис с переменными среды
 docker service create --name postgres --constraint 'node.hostname==ruvds-n9vme' $env_vars postges
+# остановить
+docker service update --replicas 0 postgres
 
-заходим в контейнер на втором сервисе
+docker volume create pg_data
+docker service create \
+  --name postgres \
+  --constraint 'node.hostname==ruvds-n9vme' \
+  --mount type=volume,source=pg_data,target=/var/lib/postgresql/data \
+  $env_vars \
+  postgres
+
+docker volume create shared_volume
+docker service create \
+  --name grpc_celery \
+  --replicas 1 \
+  --mount type=volume,source=shared_volume,target=/app/grpc_app/shared \
+  --mount type=volume,source=shared_volume,target=/app/celery_app/shared \
+  grpc_celery
+
+
+# Заходим в контейнер на втором сервисе
 docker exec -it 7eae54b89e37 psql -U user -d db53
 psql -h <IP-адрес_или_имя_узла> -p 5432 -U <имя_пользователя> -d <имя_базы_данных>
+
+
+
+
 
 ```bash
 docker service create --name <имя_сервиса> --constraint 'node.hostname==<имя_узла>' <образ>

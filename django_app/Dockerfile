@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 8000
 
 # Команда для запуска сервера
-#CMD ["python", "manage.py", "runserver"]
+CMD ["gunicorn", "django_app.wsgi:application", "--bind", "0.0.0.0:8000"]
