@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt --no-cache-dir
 RUN rm -rf shared
 
 # Копируем оригинальную папку вместо символической ссылки
-COPY ../shared /app/shared
+#COPY ../shared /app/shared
 
 # Копируем остальные файлы проекта в контейнер
 COPY . .
