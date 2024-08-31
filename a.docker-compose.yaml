@@ -90,8 +90,8 @@ services:
         condition: service_started
       bot:
         condition: service_started
-      django:
-        condition: service_started
+#      django:
+#        condition: service_started
 
 volumes:
   static_volume:
