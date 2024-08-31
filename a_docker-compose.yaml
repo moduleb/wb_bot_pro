@@ -11,8 +11,8 @@ services:
     env_file:
       - .env
     environment:
-      REDIS_HOST: redis
-      POSTGRES_HOST: postgres
+      REDIS_HOST: 192.168.0.3
+      POSTGRES_HOST: 192.168.0.3
 
   fastapi:
     container_name: fastapi
@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: 192.168.0.3
       GRPC_HOST: grpc_celery
     command: uvicorn run:app --host 0.0.0.0 --port 8000
     depends_on:
@@ -48,7 +48,7 @@ services:
       WEBSOCKET_HOST: fastapi
 #      убрать GRPC после того как перенесу в фастапи
       GRPC_HOST: grpc_celery
-      REDIS_HOST: redis
+      REDIS_HOST: 192.168.0.3
     volumes:
       - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
     depends_on:
@@ -69,7 +69,7 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: 192.168.0.3
     command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
 
 
