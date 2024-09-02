@@ -2,6 +2,7 @@ import json
 import logging
 
 import redis
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -13,7 +14,7 @@ import grpc
 from proto.service_pb2 import ItemRequest
 from proto.service_pb2_grpc import ParserServiceStub
 
-
+load_dotenv()
 
 engine = create_engine(config.DATABASE_URL_SYNC, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
