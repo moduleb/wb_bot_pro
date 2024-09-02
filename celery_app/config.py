@@ -11,10 +11,12 @@ def load_env_or_default(variable_name, default):
 
 """ DATABASE """
 POSTGRES_HOST = load_env_or_default('POSTGRES_HOST', 'localhost')
-POSTGRES_DB = load_env_or_default('POSTGRES_DB', 'local')
+POSTGRES_DB = os.getenv("POSTGRES_DB")
 POSTGRES_USER = load_env_or_default('POSTGRES_USER', 'local')
 POSTGRES_PASSWORD = load_env_or_default('POSTGRES_PASSWORD', 'local')
+print(POSTGRES_DB)
 DATABASE_URL_SYNC = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
+print(DATABASE_URL_SYNC)
 
 """ REDIS """
 REDIS_HOST = load_env_or_default('REDIS_HOST', 'localhost')

@@ -17,3 +17,4 @@ requests
 psycopg2-binary
 django
 mkdocs
+uvicorn

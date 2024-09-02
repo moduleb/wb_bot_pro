@@ -1,0 +1,13 @@
+[Unit]
+Description=Celery App
+After=network.target
+
+[Service]
+User=a
+WorkingDirectory=/home/a/wb_bot_pro/celery
+ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/celery/run.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

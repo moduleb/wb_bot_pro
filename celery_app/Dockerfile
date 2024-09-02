@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+#FROM python:3.12-slim
+FROM python:3.12-alpine
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -15,7 +16,7 @@ COPY . .
 #COPY ./celery_app ./celery_app
 
 # Устанавливаем рабочую директорию для запуска приложения
-WORKDIR /app/grpc_app
+#WORKDIR /app/grpc_app
 
 # Запуск приложения
 CMD ["python", "run.py"]
