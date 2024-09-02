@@ -8,3 +8,4 @@ pg_data/
 celerybeat-schedule.db
 shared
 !shared/
+*.env

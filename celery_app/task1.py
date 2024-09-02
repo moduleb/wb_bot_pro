@@ -7,11 +7,11 @@ from sqlalchemy.orm import sessionmaker
 
 import config
 from run import app
-from shared.db_models import All_
+from db_sync.db_models import All_
 import grpc
 
-from shared.grpc_models.service_pb2 import ItemRequest
-from shared.grpc_models.service_pb2_grpc import ParserServiceStub
+from grpc_modules.service_pb2 import ItemRequest
+from grpc_modules.service_pb2_grpc import ParserServiceStub
 
 
 

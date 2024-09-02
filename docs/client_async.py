@@ -1,8 +1,8 @@
 import grpc
 import asyncio
 
-from shared.grpc_models.service_pb2 import ItemRequest
-from shared.grpc_models.service_pb2_grpc import ParserServiceStub
+from grpc_app.service_pb2 import ItemRequest
+from grpc_app.service_pb2_grpc import ParserServiceStub
 from config import GRPC_CONNECTION_STRING
 # GRPC_CONNECTION_STRING = 'localhost:50051'
 

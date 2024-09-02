@@ -1,8 +1,8 @@
 
 import grpc
 
-from shared.grpc_models.service_pb2 import ItemRequest
-from shared.grpc_models.service_pb2_grpc import ParserServiceStub
+from grpc_modules.service_pb2 import ItemRequest
+from grpc_modules.service_pb2_grpc import ParserServiceStub
 from config import GRPC_CONNECTION_STRING
 
 

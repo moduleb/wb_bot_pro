@@ -4,7 +4,7 @@ from typing import List, TypeVar, Dict
 
 from sqlalchemy.future import select
 
-from shared.db_models import Base
+from fastapi_app.db.db_models import Base
 
 
 # ----- CREATE -----
