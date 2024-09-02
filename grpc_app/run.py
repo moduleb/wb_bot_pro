@@ -52,7 +52,8 @@ def serve():
 
     # Добавьте ваш gRPC сервис
     add_ParserServiceServicer_to_server(ParserService(), server)
-    server.add_insecure_port('[::]:50051')
+    # Доступен только для локальных подключений
+    server.add_insecure_port('localhost:50051')
     server.start()
     logging.info("Server is running on port 50051...")
 
@@ -63,5 +64,4 @@ def serve():
     server.wait_for_termination()  # Ожидание завершения работы сервера
 
 if __name__ == '__main__':
-    load_dotenv()
     serve()

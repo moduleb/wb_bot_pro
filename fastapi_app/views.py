@@ -3,14 +3,13 @@ import logging
 import os
 
 import asyncpg
-from dotenv import load_dotenv
+
 from fastapi import APIRouter
 from fastapi import WebSocket, WebSocketDisconnect
 
 from db import service
 
 connections = []
-load_dotenv()
 
 for key, value in os.environ.items():
     print(f"{key}={value}")
