@@ -1,6 +1,6 @@
 import json
 import logging
-import os
+
 
 import asyncpg
 
@@ -10,9 +10,6 @@ from fastapi import WebSocket, WebSocketDisconnect
 from db import service
 
 connections = []
-
-# for key, value in os.environ.items():
-#     print(f"{key}={value}")
 
 router = APIRouter()
 

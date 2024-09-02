@@ -1,6 +1,5 @@
 import os
 
-from dotenv import load_dotenv
 
 
 def load_env_or_default(variable_name, default):
@@ -9,7 +8,6 @@ def load_env_or_default(variable_name, default):
     else:
         var = default
     return var
-load_dotenv()
 
 """ DATABASE """
 POSTGRES_HOST = load_env_or_default('POSTGRES_HOST', 'localhost')

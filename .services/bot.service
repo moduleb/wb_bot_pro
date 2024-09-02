@@ -5,10 +5,9 @@ After=network.target
 [Service]
 User=a
 WorkingDirectory=/home/a/wb_bot_pro/bot_app
-Environment="PYTHONPATH=/home/a/wb_bot_pro/bot_app"
-ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/bot_app/run.py
+#Environment="PYTHONPATH=/home/a/wb_bot_pro/bot_app"
 EnvironmentFile=/home/a/wb_bot_pro/.env
-
+ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/bot_app/run.py
 Restart=always
 RestartSec=5
 
