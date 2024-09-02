@@ -1,6 +1,5 @@
 import os
-from dotenv import load_dotenv
-load_dotenv()
+
 
 
 def load_env_or_default(variable_name, default):

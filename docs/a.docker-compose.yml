@@ -9,7 +9,7 @@ services:
       - ./shared:/app/grpc_app/shared
       - ./shared:/app/celery_app/shared
     env_file:
-      - .env
+      - ../.env
     environment:
       REDIS_HOST: 192.168.0.3
       POSTGRES_HOST: 192.168.0.3
@@ -17,7 +17,7 @@ services:
   fastapi:
     container_name: fastapi
     build:
-      context: ./fastapi_app
+      context: ../fastapi_app
     deploy:
       replicas: 1
     ports:
@@ -26,7 +26,7 @@ services:
       - ./shared:/app/shared  # Монтируем локальную папку shared в контейнер
       - ./shared:/app/db/shared  # Иначе нет доступа к моделям
     env_file:
-      - .env
+      - ../.env
     environment:
       POSTGRES_HOST: 192.168.0.3
       GRPC_HOST: grpc_celery
@@ -37,12 +37,12 @@ services:
 
   bot:
     build:
-      context: ./bot_app
+      context: ../bot_app
     container_name: bot
     deploy:
       replicas: 1
     env_file:
-      - .env
+      - ../.env
     environment:
       WEBSOCKET_HOST: fastapi
 #      убрать GRPC после того как перенесу в фастапи

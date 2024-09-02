@@ -1,5 +1,6 @@
 #FROM python:3.12-slim
 FROM python:3.12-alpine
+RUN #apk add --no-cache gcc musl-dev
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -19,4 +20,5 @@ COPY . .
 #WORKDIR /app/grpc_app
 
 # Запуск приложения
-CMD ["python", "run.py"]
+#CMD ["python", "run.py"]
+CMD ["celery", "-A", "run", "worker", "--beat", "--loglevel=info"]

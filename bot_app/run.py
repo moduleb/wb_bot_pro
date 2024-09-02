@@ -32,13 +32,14 @@ bot = Bot(token=config.TOKEN)
 
 async def main():
     dp.include_router(router)
-    # await create_tables()
-    redis_client = await aioredis.from_url("redis://localhost")
+
     redis_client = await aioredis.from_url(config.REDIS_CONNECTION_STRING)
+
     await bot.set_my_commands(commands)
     await bot.delete_webhook(drop_pending_updates=True)
     try:
         task = asyncio.create_task(listen_price_changes(bot, redis_client))
+        logging.error(task)
         await ws_manager.connect()
 
         # Запускаем бот

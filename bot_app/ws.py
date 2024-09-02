@@ -16,6 +16,8 @@ class WebSocketManager:
         self.websocket: Optional[WebSocketClientProtocol] = None
 
     async def connect(self):
+        print(self.url)
+        logging.error(self.url)
         try:
             self.websocket = await websockets.connect(self.url)
             logging.info("WebSocket connection established.")

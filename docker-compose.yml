@@ -56,11 +56,11 @@ services:
     env_file:
       - .env
     ports:
-     - "8000:80"
+     - "80:80"
     volumes:
       - ./shared:/app/shared
       - ./shared:/app/db/shared
-    command: uvicorn run:app --host 0.0.0.0 --port 8000
+    command: uvicorn run:app --host 0.0.0.0 --port 80
     depends_on:
       postgres:
         condition: service_healthy

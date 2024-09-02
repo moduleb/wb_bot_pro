@@ -3,7 +3,6 @@ import logging
 from concurrent import futures
 
 import grpc
-from dotenv import load_dotenv
 
 import parser
 from proto.service_pb2 import ItemResponse, ItemRequest
@@ -52,8 +51,8 @@ def serve():
 
     # Добавьте ваш gRPC сервис
     add_ParserServiceServicer_to_server(ParserService(), server)
-    # Доступен только для локальных подключений
-    server.add_insecure_port('localhost:50051')
+
+    server.add_insecure_port('0.0.0.0:50051')
     server.start()
     logging.info("Server is running on port 50051...")
 
