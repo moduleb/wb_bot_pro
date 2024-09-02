@@ -6,7 +6,8 @@ After=network.target
 User=a
 WorkingDirectory=/home/a/wb_bot_pro/fastapi_app
 Environment="PYTHONPATH=/home/a/wb_bot_pro/fastapi_app"
-ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/fastapi_app/run.py
+#ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/fastapi_app/run.py
+ExecStart=/home/a/wb_bot_pro/.venv/bin/uvicorn /home/a/wb_bot_pro/fastapi_app/run:app --host 0.0.0.0 --port 8000
 EnvironmentFile=/home/a/wb_bot_pro/.env
 Restart=always
 RestartSec=5
