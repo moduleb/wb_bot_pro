@@ -6,7 +6,7 @@ After=network.target
 User=a
 WorkingDirectory=/home/a/wb_bot_pro/celery_app
 Environment="PYTHONPATH=/home/a/wb_bot_pro/celery_app"
-ExecStart=/home/a/wb_bot_pro/.venv/bin/python /home/a/wb_bot_pro/celery_app/run.py
+ExecStart=/home/a/wb_bot_pro/.venv/bin/python -m celery -A run worker --beat --loglevel=info
 EnvironmentFile=/home/a/wb_bot_pro/.env
 Restart=always
 RestartSec=5

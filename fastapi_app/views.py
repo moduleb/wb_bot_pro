@@ -11,8 +11,8 @@ from db import service
 
 connections = []
 
-for key, value in os.environ.items():
-    print(f"{key}={value}")
+# for key, value in os.environ.items():
+#     print(f"{key}={value}")
 
 router = APIRouter()
 
