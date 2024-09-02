@@ -10,8 +10,8 @@ from run import app
 from db_sync.db_models import All_
 import grpc
 
-from grpc_modules.service_pb2 import ItemRequest
-from grpc_modules.service_pb2_grpc import ParserServiceStub
+from proto.service_pb2 import ItemRequest
+from proto.service_pb2_grpc import ParserServiceStub
 
 
 

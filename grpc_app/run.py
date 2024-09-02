@@ -5,8 +5,8 @@ from concurrent import futures
 import grpc
 
 import parser
-from service_pb2 import ItemResponse, ItemRequest
-from service_pb2_grpc import ParserServiceServicer, add_ParserServiceServicer_to_server
+from grpc_app.proto.service_pb2 import ItemResponse, ItemRequest
+from grpc_app.proto.service_pb2_grpc import ParserServiceServicer, add_ParserServiceServicer_to_server
 
 # Установка переменных окружения
 # os.environ['GRPC_VERBOSITY'] = 'DEBUG'
