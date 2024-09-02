@@ -3,6 +3,7 @@ import logging
 from concurrent import futures
 
 import grpc
+from dotenv import load_dotenv
 
 import parser
 from proto.service_pb2 import ItemResponse, ItemRequest
@@ -62,4 +63,5 @@ def serve():
     server.wait_for_termination()  # Ожидание завершения работы сервера
 
 if __name__ == '__main__':
+    load_dotenv()
     serve()
