@@ -32,6 +32,8 @@ services:
       context: ./grpc_app
     env_file:
       - .env
+    ports:
+      - "50051:50051"
     volumes:
       - ./shared:/app/shared
 

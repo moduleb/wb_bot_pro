@@ -9,8 +9,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 import kb
+
 import text
-from parser_func import parser
+
 
 
 from states import State_
@@ -103,19 +104,19 @@ async def add(msg: Message, state: FSMContext):
     await delete_msgs(bot, data.get('msgs'))
 
     try:
-        data = await parser(url)
-        price = data.get("price")
-        title = data.get("title")
-        item_id = data.get("item_id")
+        # data = await parser(url)
+        # price = data.get("price")
+        # title = data.get("title")
+        # item_id = data.get("item_id")
 
         # Формируем сообщение для отправки по websocket
         message = {
             "action": "create",
             "user_id": user_id,
-            "price":price,
-            "title":title,
+            # "price":price,
+            # "title":title,
             "url": url,
-            "item_id": item_id
+            # "item_id": item_id
         }
 
         # Отправляем сообщение по websocket

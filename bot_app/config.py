@@ -1,10 +1,11 @@
 import os
 
+for key , value in os.environ.items():
+    print(key, value)
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.environ.get("TOKEN")
 
 admin_tg_id = 5312665858
-
 
 def load_env_or_default(variable_name, default):
     if var := os.getenv(variable_name):

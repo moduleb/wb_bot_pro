@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from fastapi import WebSocket, WebSocketDisconnect
 
 from db import service
+from parser_func import parser
 
 connections = []
 
@@ -26,23 +27,13 @@ async def websocket_endpoint(websocket: WebSocket):
             message_dict = json.loads(data)  # Десериализуем JSON в словарь
 
             action = message_dict.get("action")
-            item_id = message_dict.get("item_id")
             user_id = message_dict.get("user_id")
-            price = message_dict.get("price")
-            title = message_dict.get("title")
-            url = message_dict.get("url")
 
             if action == "get_all":
 
                 data = await service.get_items_by_user_id(user_id)
                 data_to_send = []
-                # logging.info(message_dict)
-                # data_to_send = [{
-                #     "url": "url",
-                #     "price": "200",
-                #     "title": "title",
-                #     "item_id": "item_id"
-                # }]
+
                 for item in data:
                     data_to_send.append({
                         "url": item.url,
@@ -62,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
             elif action == "delete":
-
+                item_id = message_dict.get("item_id")
                 await service.delete(user_id=user_id,
                                      item_id=item_id)
                 message_dict = {
@@ -73,6 +64,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(message_json)
 
             elif action == "create":
+                url = message_dict.get("url")
+                user_id = message_dict.get("user_id")
+
+                data = await parser(url)
+                price = data.get("price")
+                title = data.get("title")
+                item_id = data.get("item_id")
+
                 try:
                     # Сохраняем в бд
                     await service.insert(user_id=user_id,
