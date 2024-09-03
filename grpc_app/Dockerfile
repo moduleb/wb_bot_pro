@@ -10,14 +10,13 @@ COPY requirements.txt ./
 # Устанавливаем зависимости
 RUN pip install -r requirements.txt --no-cache-dir
 
-# Удаляем символическую ссылку (если она есть)
-#RUN rm -rf shared
-
-# Копируем оригинальную папку вместо символической ссылки
-#COPY ../shared /app/shared
-
 # Копируем остальные файлы проекта в контейнер
 COPY . .
+#COPY . ./grpc_app
+#COPY ./celery_app ./celery_app
+
+# Устанавливаем рабочую директорию для запуска приложения
+#WORKDIR /app/grpc_app
 
 # Запуск приложения
-#CMD ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "run.py"]

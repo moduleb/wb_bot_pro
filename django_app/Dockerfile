@@ -1,5 +1,6 @@
 # Используем официальный образ Python
-FROM python:3.12-slim
+#FROM python:3.12-slim
+FROM python:3.12-alpine
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -17,7 +18,7 @@ COPY . .
 #RUN python manage.py migrate
 
 # Открываем порт, на котором будет работать Django
-EXPOSE 8000
+#EXPOSE 8000
 
 # Команда для запуска сервера
-#CMD ["python", "manage.py", "runserver"]
+#CMD ["gunicorn", "django_app.wsgi:application", "--bind", "0.0.0.0:8000"]

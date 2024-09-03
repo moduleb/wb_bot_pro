@@ -1,18 +1,20 @@
 import asyncio
 import json
+import logging
 
 import text
 
 
 async def listen_price_changes(bot, redis_client):
-    print("listen_price_changes")
     pubsub = redis_client.pubsub()
     await pubsub.subscribe('price_change_channel')
 
     try:
         while True:
+            # logging.error(pubsub)
             message = await pubsub.get_message(ignore_subscribe_messages=True)
             if message and message['type'] == 'message':
+                # logging.error(message)
                 data = json.loads(message['data'])
 
                 # Формируем сообщение
