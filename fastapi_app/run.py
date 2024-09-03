@@ -9,6 +9,7 @@ app = FastAPI(title="WB_BOT_PRO")
 
 app.include_router(views.router, tags=["Websocket"])
 
+
 # Redirect на страницу документации при обращении на "/"
 @app.get("/", include_in_schema=False)
 async def redirect_to_docs():

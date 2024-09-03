@@ -1,13 +1,9 @@
-python-dotenv
 sqlalchemy
 asyncpg
-asgiref
-alembic
-websockets
 fastapi
 uvicorn
 grpcio
 grpcio-tools
-psycopg2-binary
+websockets
 
 

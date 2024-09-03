@@ -1,7 +1,0 @@
-grpcio
-grpcio-tools
-requests
-celery
-redis
-sqlalchemy
-psycopg2-binary

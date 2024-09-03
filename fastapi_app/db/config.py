@@ -1,6 +1,7 @@
 import os
 
 
+
 def load_env_or_default(variable_name, default):
     if var := os.getenv(variable_name):
         pass

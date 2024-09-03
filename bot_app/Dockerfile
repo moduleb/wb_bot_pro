@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+#FROM python:3.12-slim
+FROM python:3.12-alpine
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -10,7 +11,7 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt --no-cache-dir
 
 # Удаляем символическую ссылку (если она есть)
-#RUN rm -rf shared
+RUN rm -rf shared
 
 # Копируем оригинальную папку вместо символической ссылки
 #COPY ../shared /app/shared

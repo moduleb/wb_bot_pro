@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from . import crud, config
-from shared.db_models import All_, Base
+from .db_models import All_, Base
 
 logging.info(config.DATABASE_URL)
 # Создание асинхронного движка

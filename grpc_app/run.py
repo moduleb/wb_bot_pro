@@ -5,8 +5,8 @@ from concurrent import futures
 import grpc
 
 import parser
-from shared.grpc_models.service_pb2 import ItemResponse, ItemRequest
-from shared.grpc_models.service_pb2_grpc import ParserServiceServicer, add_ParserServiceServicer_to_server
+from proto.service_pb2 import ItemResponse, ItemRequest
+from proto.service_pb2_grpc import ParserServiceServicer, add_ParserServiceServicer_to_server
 
 # Установка переменных окружения
 # os.environ['GRPC_VERBOSITY'] = 'DEBUG'
@@ -51,7 +51,8 @@ def serve():
 
     # Добавьте ваш gRPC сервис
     add_ParserServiceServicer_to_server(ParserService(), server)
-    server.add_insecure_port('[::]:50051')
+
+    server.add_insecure_port('0.0.0.0:50051')
     server.start()
     logging.info("Server is running on port 50051...")
 

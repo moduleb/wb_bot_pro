@@ -1,0 +1,6 @@
+celery
+redis
+sqlalchemy
+psycopg2-binary
+grpcio
+grpcio-tools
