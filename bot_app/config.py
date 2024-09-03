@@ -16,7 +16,7 @@ def load_env_or_default(variable_name, default):
 
 """ WEBSOCKET """
 WEBSOCKET_HOST = load_env_or_default('WEBSOCKET_HOST', 'localhost')
-WEBSOCKET_CONNECTION_STRING = f'ws://{WEBSOCKET_HOST}:80/ws'
+WEBSOCKET_CONNECTION_STRING = f'ws://{WEBSOCKET_HOST}:8000/ws'
 
 # УБРАТЬ ПОСЛЕ ПЕРЕНОСА В ФАСТАПИ!!!!!!
 """ GRPC """
