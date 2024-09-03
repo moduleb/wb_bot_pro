@@ -44,39 +44,17 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_1">Основные функции бота:</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_2">Архитектура и компоненты:</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">Особенности реализации:</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">Реализация архитектуры:</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">Технологии и инструменты:</a>
     </li>
     </ul>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">Возможности</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="features/overview.md">Обзор</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="features/benefits.md">Преимущества</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="features/usage.md">Использование</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Технологии</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="" href="technologies/architecture.md">Архитектура</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="technologies/tools.md">Инструменты</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="technologies/integrations.md">Интеграции</a>
-                  </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="" href="api.md">API</a>
+                <li class="toctree-l1"><a class="reference internal" href="architecture/">Архитектура</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="" href="contacts.md">Контакты</a>
+                <li class="toctree-l1"><a class="reference internal" href="contacts/">Контакты</a>
                 </li>
               </ul>
       </div>
@@ -114,44 +92,46 @@
 <img alt="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&amp;logo=docker&amp;logoColor=white" />
 <img alt="Linux" src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&amp;logo=linux&amp;logoColor=black" /></p>
 <h1 id="wb-bot-pro">WB BOT PRO</h1>
-<p>Инструмент для пользователей Wildberries, который позволяет отслеживать изменения цен на товары и получать уведомления в режиме реального времени. Бот разработан с использованием современных технологий и обеспечивает высокую производительность и надежность.</p>
+<p>Инструмент для пользователей Wildberries, который позволяет отслеживать изменения цен на товары и 
+получать уведомления в режиме реального времени. Бот разработан с использованием современных технологий 
+и обеспечивает высокую производительность и надежность.<br />
+Код приложения доступен по <a href="https://github.com/moduleb/wb_bot_pro">ссылке</a></p>
 <h2 id="_1">Основные функции бота:</h2>
 <ul>
 <li><strong>Отслеживание цен</strong>: Принимает ссылку на товар и отправляет уведомление пользователю при изменении цены.</li>
 <li><strong>Множественное отслеживание</strong>: Позволяет добавлять несколько товаров для одновременного мониторинга.</li>
 </ul>
-<h2 id="_2">Архитектура и компоненты:</h2>
-<p>Бот реализован с использование микросервисной архитектуры и включает следующие компоненты:<br />
-1. <strong>Telegram Bot</strong><br />
-2. <strong>FastAPI сервер</strong><br />
-3. <strong>PostgreSQL</strong><br />
-4. <strong>Celery</strong><br />
-5. <strong>Redis</strong><br />
-6. <strong>gRPC сервер</strong><br />
-7. <strong>Nginx</strong><br />
-8. <strong>Админ панель на Django</strong>  </p>
-<h2 id="_3">Особенности реализации:</h2>
+<h2 id="_2">Технологии и инструменты:</h2>
+<ol>
+<li><strong>Aiogram</strong> бот написан на этой асинхронной библиотеке  </li>
+<li><strong>FastAPI</strong> фреймворк для реализации сервера  </li>
+<li><strong>Webcokets</strong> технология связи бота и FastAPI сервера</li>
+<li><strong>PostgreSQL</strong> SQL база данных</li>
+<li><code>asyncpg</code> асинхронный драйвер для работы с PostgreSQL.</li>
+<li>
 <ul>
-<li><strong>Контейнеризация</strong>: Проект развернут с помощью Docker Compose, что упрощает развертывание и управление зависимостями.</li>
-<li><strong>Безопасность</strong>: Секретные данные хранятся в файле <code>.env</code>, что обеспечивает защиту конфиденциальной информации.</li>
-<li><strong>Взаимодействие с API</strong>: Бот интегрирован с внешним API Wildberries для получения актуальной информации о товарах.</li>
-<li><strong>Документация</strong>: Автоматически генерируется сайт с документацией с помощью MkDocs, что облегчает понимание и использование проекта.</li>
-</ul>
-<h2 id="_4">Реализация архитектуры:</h2>
-<ul>
-<li><strong>Административная панель</strong>: Развернута админка на Django для редактирования моделей и управления данными.</li>
-<li><strong>Проксирование запросов</strong>: Nginx проксирует запросы к базе данных PostgreSQL, обеспечивая высокую производительность.</li>
-<li>Используется асинхронный драйвер <code>asyncpg</code> для работы с PostgreSQL.</li>
 <li>SQLAlchemy применяется в качестве ORM для удобного взаимодействия с базой данных.</li>
-<li>Alembic используется для управления миграциями базы данных.</li>
-<li><strong>Фоновая обработка</strong>: Redis работает с Celery для хранения задач, а Celery отправляет уведомления боту через очередь Redis, когда необходимо уведомить пользователя.</li>
-<li><strong>Интерфейс взаимодействия</strong>: Бот служит интерфейсом к приложению FastAPI и может выполнять операции с данными по запросу.</li>
-<li><strong>Связь через вебсокеты</strong>: Связь между ботом и FastAPI реализована через вебсокеты для обеспечения мгновенной передачи данных.</li>
 </ul>
-<p>FastAPI также использует gRPC сервер для парсинга данных, что позволяет эффективно обрабатывать запросы. Управление данными осуществляется через RESTful эндпоинты, включая возможность добавления, получения и удаления записей.</p>
+</li>
+<li>
+<ul>
+<li>Alembic используется для управления миграциями базы данных.</li>
+</ul>
+</li>
+<li><strong>Mkdocs</strong>: Автоматически генерируется сайт с документацией с помощью MkDocs, что облегчает понимание и использование проекта.</li>
+<li><strong>Celery</strong>  выполняет фоновые периодические задачи сравнения цен</li>
+<li><strong>Redis</strong>  селери использует его как брокера и отправляет задачи в очередь для бота</li>
+<li><strong>gRPC</strong>  операции парсинго делаются на отдельном grpc сервера</li>
+<li><strong>Nginx</strong>  обратный прокси сервер</li>
+<li><strong>Django</strong>  Админ панель </li>
+<li>docker compose Проект развернут с помощью Docker Compose, что упрощает развертывание и управление зависимостями.</li>
+</ol>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="architecture/" class="btn btn-neutral float-right" title="Архитектура">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -174,6 +154,8 @@
     
     
     
+      <span><a href="architecture/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
   </span>
 </div>
     <script src="js/jquery-3.6.0.min.js"></script>
@@ -192,5 +174,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-09-03 17:23:29.728000+00:00
+Build Date UTC : 2024-09-03 17:55:04.885969+00:00
 -->
