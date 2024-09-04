@@ -1,3 +1,5 @@
+alembic
+psycopg2-binary
 sqlalchemy
 asyncpg
 fastapi
@@ -5,5 +7,4 @@ uvicorn
 grpcio
 grpcio-tools
 websockets
-
 

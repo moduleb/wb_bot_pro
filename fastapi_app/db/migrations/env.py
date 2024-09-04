@@ -1,3 +1,4 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -17,7 +18,7 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
-from fastapi_app.db.db_models import Base
+from db_models import Base
 target_metadata = Base.metadata
 # target_metadata = .shared.db_models.All_.Base.metadata
 # target_metadata = None
@@ -27,6 +28,17 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
+
+# Получение конфигурации из alembic.ini
+config = context.config
+
+# Установка строки подключения из переменной окружения
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

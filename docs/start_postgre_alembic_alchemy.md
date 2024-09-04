@@ -17,6 +17,19 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' pos
 [migrations/.env]
 from models import Base
 target_metadata = Base.metadata
+
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
+
+# Получение конфигурации из alembic.ini
+config = context.config
+
+# Установка строки подключения из переменной окружения
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
+
 ---------------------
 
 # Создаем миграцию
