@@ -82,6 +82,7 @@ sudo docker compose down
 - на удаленном сервере http://<IP адрес сервера>
 - .../docs - документация Swagger
 
+## CREATE
 <a id="create"></a>
 ### **[post]** .../api/v1/items
 
@@ -97,6 +98,7 @@ sudo docker compose down
 
 ---
 
+## GET_ALL
 <a id="get_all"></a>
 ### **[get]** .../api/v1/items
 Параметры:
@@ -126,6 +128,7 @@ sudo docker compose down
 
 ---
 
+## DELETE
 <a id="delete"></a>
 ### **[delete]** .../api/v1/items
 Параметры:
