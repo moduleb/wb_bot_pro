@@ -21,14 +21,14 @@
 
 ---
 
-<a href="features"></a>
+<a id="features"></a>
 ## Возможности:
 - Добавление товара для отслеживания с помощью запроса к API или через бота
 - Просмотр всех отслеживаемых товаров с помощью запроса к API или через бота
 - Удаление товара из списка отслеживаемых с помощью запроса к API или через бота
 - Получение уведомлений при изменении цены товара. Только в боте.
 
-<a href="services"></a>
+<a id="services"></a>
 ## Компоненты:
 - Веб-приложение на FastAPI  
 - Веб-сервер Nginx  
@@ -39,7 +39,7 @@
 - gRPC сервер для парсинга
 - Админ панель на Django
 
-<a href="install"></a>
+<a id="install"></a>
 ## Установка и запуск:
 >Для запуска вам потребуется [установить Docker](https://www.docker.com/).
 1. Клонировать проект с Github:
@@ -74,7 +74,7 @@ sudo docker compose down
 ```
 
 ---
-<a href="endpoints"></a>
+<a id="endpoints"></a>
 ## Эндпоинты:
 
 Приложение доступно по адресу:
@@ -82,7 +82,7 @@ sudo docker compose down
 - на удаленном сервере http://<IP адрес сервера>
 - .../docs - документация Swagger
 
-<a href="create"></a>
+<a id="create"></a>
 ### **[post]** .../api/v1/items
 
 Принимает JSON с данными нового товара:
@@ -97,7 +97,7 @@ sudo docker compose down
 
 ---
 
-<a href="get_all"></a>
+<a id="get_all"></a>
 ### **[get]** .../api/v1/items
 Параметры:
  - user_id: integer
@@ -126,7 +126,7 @@ sudo docker compose down
 
 ---
 
-<a href="delete"></a>
+<a id="delete"></a>
 ### **[delete]** .../api/v1/items
 Параметры:
  - user_id: integer
