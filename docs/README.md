@@ -14,9 +14,9 @@
 - [Возможности](#features)  
 - [Компоненты](#services)  
 - [Установка и запуск](#install)  
-- [Эндпоинты:](#endpoints)
-  - [create](#create)
-  - [get_all](#get_all)
+- Эндпоинты:
+  - [Create](#create)
+  - [Get all](#get_all)
   - [delete](#delete)
 
 ---
