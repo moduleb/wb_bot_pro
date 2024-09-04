@@ -59,8 +59,7 @@ nano RENAME.env
 
 4. Применить миграции
 ```shell
-alembic revision --autogenerate -m "Initial migration"
-alembic upgrade head
+docker exec -it -w /app/db fastapi alembic upgrade head
 ```
 
 4. Собрать и запустить приложение в Docker:
