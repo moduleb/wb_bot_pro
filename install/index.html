@@ -48,10 +48,6 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#_2">Скачать проект</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">Настроить приложение</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">Запустить</a>
-    </li>
     </ul>
                 </li>
               </ul>
@@ -93,27 +89,52 @@
                 <p>Для запуска вам потребуется <a href="https://www.docker.com/">установить Docker</a>.  </p>
 <h1 id="_1"></h1>
 <h2 id="_2">Скачать проект</h2>
-<p>Клонировать проект с Github:</p>
+<ol>
+<li>Клонировать проект с Github:</li>
+</ol>
 <pre><code class="language-bash">  git clone https://github.com/moduleb/wb_bot_pro.git
 </code></pre>
-<p>Перейти в папку проекта:</p>
+<ol>
+<li>Перейти в папку проекта:</li>
+</ol>
 <pre><code class="language-bash">  cd wb_bot_pro
 </code></pre>
-<h2 id="_3">Настроить приложение</h2>
-<p>Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные, переименовать файл:</p>
+<ol>
+<li>Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные если необходимо, сохранить:</li>
+</ol>
 <pre><code class="language-bash">nano RENAME.env
 </code></pre>
-<p>Применить миграции</p>
-<pre><code class="language-shell">alembic revision --autogenerate -m &quot;Initial migration&quot;
-alembic upgrade head
+<ol>
+<li>переименовать файл RENAME.env -&gt; .env</li>
+</ol>
+<pre><code class="language-sh">mv RENAME.env .env
 </code></pre>
-<h2 id="_4">Запустить</h2>
-<p>Собрать и запустить приложение в Docker:</p>
+<ol>
+<li>Собрать и запустить приложение в Docker:</li>
+</ol>
 <pre><code class="language-bash">sudo docker compose up -d --build
 </code></pre>
-<p>Остановить приложение:</p>
+<ol>
+<li>Применить миграции</li>
+</ol>
+<pre><code class="language-shell">docker exec -it -w /app/db fastapi alembic upgrade head &amp;&amp;
+docker exec -it django python3 manage.py migrate
+</code></pre>
+<ol>
+<li>Создать пользователя для админки Django</li>
+</ol>
+<pre><code class="language-sh">docker exec -it django python3 manage.py createsuperuser
+</code></pre>
+<p>`
+8. Остановить приложение:</p>
 <pre><code class="language-bash">sudo docker compose down
 </code></pre>
+<p>Теперь можно отправлять сообщения боту, токен которого вы указали в файле .env
+Приложение доступно по адресу:<br />
+- на локальной машине <code>http://localhost/</code><br />
+- на удаленном сервере <code>http://&lt;IP адрес сервера&gt;</code><br />
+- <code>/docs</code> - документация Swagger<br />
+- <code>/admin</code> - админ панель Django (логин и пароль, который ввели при создании суперпользователя)</p>
               
             </div>
           </div><footer>
