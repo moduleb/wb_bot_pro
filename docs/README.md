@@ -91,6 +91,7 @@ sudo docker compose down
 - на локальной машине `http://localhost/`  
 - на удаленном сервере `http://<IP адрес сервера>`  
 - `/docs` - документация Swagger  
+- `/admin` - админ панель Django (логин и пароль, который ввели при создании суперпользователя)  
 
 ## CREATE
 <a id="create"></a>
