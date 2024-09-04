@@ -34,8 +34,6 @@ services:
       - .env
     ports:
       - "50051:50051"
-    volumes:
-      - ./shared:/app/shared
 
   celery_app:
     container_name: celery
@@ -43,8 +41,6 @@ services:
       context: ./celery_app
     env_file:
       - .env
-    volumes:
-      - ./shared:/app/shared
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,9 +55,6 @@ services:
       - .env
     ports:
      - "8000:80"
-    volumes:
-      - ./shared:/app/shared
-      - ./shared:/app/db/shared
     command: uvicorn run:app --host 0.0.0.0 --port 8000
     depends_on:
       postgres:
@@ -75,8 +68,6 @@ services:
       context: ./bot_app
     env_file:
       - .env
-    volumes:
-      - ./shared:/app/shared
     depends_on:
       redis:
         condition: service_healthy

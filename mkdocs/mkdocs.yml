@@ -1,15 +1,9 @@
 site_name: WB BOT PRO
 nav:
-  - Главная: index.md
-  - Возможности:
-      - Обзор: features/overview.md
-      - Преимущества: features/benefits.md
-      - Использование: features/usage.md
-  - Технологии:
-      - Архитектура: technologies/architecture.md
-      - Инструменты: technologies/tools.md
-      - Интеграции: technologies/integrations.md
+  - Обзор: index.md
+  - Установка и запуск: install.md
   - API: api.md
+  - Архитектура и реализация: architecture.md
   - Контакты: contacts.md
 theme:
   name: readthedocs

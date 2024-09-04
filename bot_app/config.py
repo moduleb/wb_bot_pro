@@ -1,8 +1,5 @@
 import os
 
-for key , value in os.environ.items():
-    print(key, value)
-
 TOKEN = os.environ.get("TOKEN")
 
 admin_tg_id = 5312665858

@@ -1,4 +1,3 @@
-.env
 __pycache__/
 .DS_Store
 .idea/
@@ -6,6 +5,4 @@ __pycache__/
 *.db
 pg_data/
 celerybeat-schedule.db
-shared
-!shared/
 *.env
