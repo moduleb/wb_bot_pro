@@ -77,10 +77,10 @@ sudo docker compose down
 <a id="endpoints"></a>
 ## Эндпоинты:
 
-Приложение доступно по адресу:
-- на локальной машине http://localhost/
-- на удаленном сервере http://<IP адрес сервера>
-- .../docs - документация Swagger
+Приложение доступно по адресу:  
+- на локальной машине `http://localhost/`  
+- на удаленном сервере `http://<IP адрес сервера>`  
+- `/docs` - документация Swagger  
 
 ## CREATE
 <a id="create"></a>
@@ -94,15 +94,15 @@ sudo docker compose down
 }
 ```
 
-Возвращает 201 CREATED
+Возвращает `201 CREATED`
 
 ---
 
 ## GET_ALL
 <a id="get_all"></a>
 ### **[get]** .../api/v1/items
-Параметры:
- - user_id: integer
+Параметры:  
+ - `user_id`: integer
 
 Возвращает все добавленные товары для заданного пользователя:
 ```json
@@ -131,11 +131,11 @@ sudo docker compose down
 ## DELETE
 <a id="delete"></a>
 ### **[delete]** .../api/v1/items
-Параметры:
- - user_id: integer
- - item_id: integer
+Параметры:  
+ - `user_id`: integer  
+ - `item_id`: integer
 
-Возвращает 204 NO CONTENT
+Возвращает `204 NO CONTENT`
 
 
 
