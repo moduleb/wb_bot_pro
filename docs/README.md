@@ -75,7 +75,7 @@ docker exec -it django python3 manage.py migrate
 
 7. Создать пользователя для админки Django
 ```sh
-docker exec -it django python3 manage.py createsuoeruser
+docker exec -it django python3 manage.py createsuperuser
 ```
 `
 8. Остановить приложение:
