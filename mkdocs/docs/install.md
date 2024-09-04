@@ -12,29 +12,33 @@
   cd wb_bot_pro
 ```
 
-3. Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные, переименовать файлн:
+3. Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные если необходимо, сохранить:
 ```bash
 nano RENAME.env
 ```
 
-4. Собрать и запустить приложение в Docker:
+4. переименовать файл RENAME.env -> .env
+```sh
+mv RENAME.env .env
+```
+
+5. Собрать и запустить приложение в Docker:
 ```bash
 sudo docker compose up -d --build
 ```
 
-5. Применить миграции
+6. Применить миграции
 ```shell
 docker exec -it -w /app/db fastapi alembic upgrade head &&
 docker exec -it django python3 manage.py migrate
 ```
 
-6. Создать пользователя для админки Django
+7. Создать пользователя для админки Django
 ```sh
 docker exec -it django python3 manage.py createsuoeruser
 ```
 `
-7. Остановить приложение:
+8. Остановить приложение:
 ```bash
 sudo docker compose down
 ```
-
