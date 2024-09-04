@@ -10,34 +10,129 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
---- проект в разработке ---
-------
+Содержание:
+- [Возможности](#features)  
+- [Компоненты](#services)  
+- [Установка и запуск](#install)  
+- [Эндпоинты:](#endpoints)
+  - [create](#create)
+  - [get_all](#get_all)
+  - [delete](#delete)
 
-## Бот для Телеграм, отслеживающий изменение цены на Wildberries.
+---
 
-Что умеет бот:
-  + принимает ссылку на товар и присылает уведомление при изменении цены.
-  + позволяет добавлять несколько товаров для отслеживания.
+<a href="features"></a>
+## Возможности:
+- Добавление товара для отслеживания с помощью запроса к API или через бота
+- Просмотр всех отслеживаемых товаров с помощью запроса к API или через бота
+- Удаление товара из списка отслеживаемых с помощью запроса к API или через бота
+- Получение уведомлений при изменении цены товара. Только в боте.
 
-Проект включает:
-Тг бот на вебхуках
-Fastapi-swagger-websockets
-Postgre-sqlalchemy-alembic-redis для хранения данных
-Celery-redis для задач
-Интеграция с вайдбеоис апи
-Docker-compose для развертывания
-Github-flow
-Nginx-ssl
-Все это на двух серверах с локальной сетью
-nginx(80,443 +postgre+  бот + джанго(80)
-Еще джанго админка
-Управление серверов ansible
-Развериывание контейнеров  docker swarm
+<a href="services"></a>
+## Компоненты:
+- Веб-приложение на FastAPI  
+- Веб-сервер Nginx  
+- База данных Postgres  
+- Телеграм-бот на Aiogram 3  
+- Очередь задач Redis
+- Сервер выполнения задач Celery
+- gRPC сервер для парсинга
+- Админ панель на Django
 
-Из админки
-1. узнать статус бота (вкл или выключен)
-2. Запустить, остановить, перезагрузить бота
-3. Назначить админов бота
-4. Редактировать данные пользователей
-5. Блокировать пользователей
-6. Смотреть статистику бота в виде графиков и столбцов
+<a href="install"></a>
+## Установка и запуск:
+>Для запуска вам потребуется [установить Docker](https://www.docker.com/).
+1. Клонировать проект с Github:
+```bash
+  git clone https://github.com/moduleb/wb_bot_pro.git
+```
+
+2. Перейти в папку проекта:
+```bash
+  cd wb_bot_pro
+```
+
+3. Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные, переименовать файлн:
+```bash
+nano RENAME.env
+```
+
+4. Применить миграции
+```shell
+alembic revision --autogenerate -m "Initial migration"
+alembic upgrade head
+```
+
+4. Собрать и запустить приложение в Docker:
+```bash
+sudo docker compose up -d --build
+```
+
+5. Остановить приложение:
+```bash
+sudo docker compose down
+```
+
+---
+<a href="endpoints"></a>
+## Эндпоинты:
+
+Приложение доступно по адресу:
+- на локальной машине http://localhost/
+- на удаленном сервере http://<IP адрес сервера>
+- .../docs - документация Swagger
+
+<a href="create"></a>
+### **[post]** .../api/v1/items
+
+Принимает JSON с данными нового товара:
+```json
+{
+  "url": "string", # ссылка на товар
+  "user_id": "string" # id пользователя в телеграм
+}
+```
+
+Возвращает 201 CREATED
+
+---
+
+<a href="get_all"></a>
+### **[get]** .../api/v1/items
+Параметры:
+ - user_id: integer
+
+Возвращает все добавленные товары для заданного пользователя:
+```json
+[
+    {
+        "id": 8,
+        "user_id": 5312665858,
+        "item_id": 176656692,
+        "price": 1753,
+        "title": "Педали для велосипеда на трех промышленных подшипниках",
+        "url": "https://www.wildberries.ru/catalog/176656692/detail.aspx"
+    },
+    {
+        "id": 9,
+        "user_id": 5312665858,
+        "item_id": 165835462,
+        "price": 1338,
+        "title": "Багажник на велосипед",
+        "url": "https://www.wildberries.ru/catalog/165835462/detail.aspx"
+    }
+]
+```
+
+---
+
+<a href="delete"></a>
+### **[delete]** .../api/v1/items
+Параметры:
+ - user_id: integer
+ - item_id: integer
+
+Возвращает 204 NO CONTENT
+
+
+
