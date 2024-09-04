@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Контакты - WB BOT PRO</title>
+    <title>Установка и запуск - WB BOT PRO</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b";
-        var mkdocs_page_input_path = "contacts.md";
+        var mkdocs_page_name = "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430 \u0438 \u0437\u0430\u043f\u0443\u0441\u043a";
+        var mkdocs_page_input_path = "install.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -43,8 +43,16 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Обзор</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../install/">Установка и запуск</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Установка и запуск</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">Скачать проект</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">Настроить приложение</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">Запустить</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -55,10 +63,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../architecture/">Архитектура и реализация</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Контакты</a>
-    <ul class="current">
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../contacts/">Контакты</a>
                 </li>
               </ul>
       </div>
@@ -75,7 +81,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Контакты</li>
+      <li class="breadcrumb-item active">Установка и запуск</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -84,18 +90,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="_1">Контакты</h1>
-<p>Если у вас есть вопросы или предложения, вы можете связаться со мной по следующим каналам:</p>
-<ul>
-<li><strong>Telegram</strong>: <a href="https://t.me/popcorn138">@popcorn138</a></li>
-<li><strong>Email</strong>: <a href="mailto:t3841@duck.com">t3841@duck.com</a></li>
-<li><strong>GitHub</strong>: <a href="https://github.com/moduleb">https://github.com/moduleb</a></li>
-</ul>
+                <p>Для запуска вам потребуется <a href="https://www.docker.com/">установить Docker</a>.  </p>
+<h1 id="_1"></h1>
+<h2 id="_2">Скачать проект</h2>
+<p>Клонировать проект с Github:</p>
+<pre><code class="language-bash">  git clone https://github.com/moduleb/wb_bot_pro.git
+</code></pre>
+<p>Перейти в папку проекта:</p>
+<pre><code class="language-bash">  cd wb_bot_pro
+</code></pre>
+<h2 id="_3">Настроить приложение</h2>
+<p>Изменить файл RENAME.env, вписать токен от телеграм бота и другие переменные, переименовать файл:</p>
+<pre><code class="language-bash">nano RENAME.env
+</code></pre>
+<p>Применить миграции</p>
+<pre><code class="language-shell">alembic revision --autogenerate -m &quot;Initial migration&quot;
+alembic upgrade head
+</code></pre>
+<h2 id="_4">Запустить</h2>
+<p>Собрать и запустить приложение в Docker:</p>
+<pre><code class="language-bash">sudo docker compose up -d --build
+</code></pre>
+<p>Остановить приложение:</p>
+<pre><code class="language-bash">sudo docker compose down
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../architecture/" class="btn btn-neutral float-left" title="Архитектура и реализация"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href=".." class="btn btn-neutral float-left" title="Обзор"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../api/" class="btn btn-neutral float-right" title="API">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -118,8 +142,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../architecture/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../api/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
