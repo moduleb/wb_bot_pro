@@ -74,31 +74,31 @@ services:
       fastapi:
         condition: service_started
 
-#  nginx:
-#    container_name: nginx
-#    image: nginx:latest
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    volumes:
-#      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-#      - ./django_app/staticfiles:/django/staticfiles
-#      - ./django_app/mediafiles:/django/mediafiles
-#    depends_on:
-#      fastapi:
-#        condition: service_started
-#      bot:
-#        condition: service_started
-#      django:
-#        condition: service_started
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./django_app/staticfiles:/django/staticfiles
+      - ./django_app/mediafiles:/django/mediafiles
+    depends_on:
+      fastapi:
+        condition: service_started
+      bot:
+        condition: service_started
+      django:
+        condition: service_started
 
-#  django:
-#    container_name: django
-#    build:
-#      context: ./django_app
-#    env_file:
-#      - .env
-#    command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
+  django:
+    container_name: django
+    build:
+      context: ./django_app
+    env_file:
+      - .env
+    command: gunicorn django_app.wsgi:application --bind 0.0.0.0:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
